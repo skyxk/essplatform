@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chen.dao.UserMapper">
+
+    <resultMap type="com.chen.entity.User" id="userMap">
+        <id property="user_id" column="user_id"/>
+        <result property="dep_id" column="dep_id"/>
+        <result property="unit_id" column="unit_id"/>
+        <result property="power_range" column="power_range"/>
+        <result property="role_id" column="role_id"/>
+        <result property="u_level" column="u_level"/>
+        <result property="person_id" column="person_id"/>
+        <result property="is_active" column="is_active"/>
+        <result property="state" column="state"/>
+        <result property="input_time" column="input_time"/>
+        <result property="input_user_id" column="input_user_id"/>
+        <result property="signSafeLevel" column="signSafeLevel"/>
+        <association property="person" column="person_id" select="com.chen.dao.PersonMapper.findPersonById"/>
+        <association property="unit" column="unit_id" select="com.chen.dao.UnitMapper.findUnitById" />
+    </resultMap>
+
+    <select id="findUserById" resultMap="userMap">
+        SELECT * FROM users
+        WHERE user_id = #{user_id}
+    </select>
+
+    <select id="findAdminUserList" resultMap="userMap">
+        select * from users
+        <where>
+            <if test="user_id != null">
+                user_id = #{user_id}
+            </if>
+            <if test="person_id != null">
+                AND person_id = #{person_id}
+            </if>
+            and state = 1
+            and  (role_id like CONCAT('%','auditor','%')
+            or role_id like CONCAT('%','producer','%'))
+        </where>
+    </select>
+
+    <select id="findUserByPersonId" resultMap="userMap">
+        SELECT * FROM users
+        WHERE person_id = #{person_id}
+            and  (role_id like CONCAT('%','auditor','%')
+            or role_id like CONCAT('%','producer','%'))
+    </select>
+
+
+
+
+</mapper>

@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en" class="no-ie" style="overflow:hidden;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="renderer" content="webkit"/>
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/pintuer.css}" href="../../static/css/pintuer.css"/>
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="../../static/css/admin.css"/>
+    <link rel="stylesheet" th:href="@{/css/common.css}" href="../../static/css/common.css"/>
+    <script th:src="@{/js/jquery-3.2.1.min.js}" src="../../static/js/jquery-3.2.1.min.js"></script>
+    <script th:src="@{/js/bootstrap.js}" src="../../static/js/bootstrap.js"></script>
+    <!--    弹框插件-->
+    <link rel="stylesheet" type="text/css" th:href="@{/xcConfirm/css/xcConfirm.css}"
+          href="../../static/xcConfirm/css/xcConfirm.css"/>
+    <script th:src="@{/xcConfirm/js/xcConfirm.js}" type="text/javascript" charset="utf-8"
+            src="../../static/xcConfirm/js/xcConfirm.js"></script>
+    <link rel="stylesheet" th:href="@{/jquery-dialogbox/jquery.dialogbox-1.0.css}"
+          href="../../static/jquery-dialogbox/jquery.dialogbox-1.0.css"/>
+    <script th:src="@{/jquery-dialogbox/jquery.dialogbox-1.0.js}"
+            src="../../static/jquery-dialogbox/jquery.dialogbox-1.0.js"></script>
+    <script th:src="@{/js/pintuer.js}" src="../../static/js/pintuer.js"></script>
+    <script th:src="@{/js/quit.js}" src="../../static/js/quit.js"></script>
+    <style type="text/css">
+        .body-content{
+            width: 60%;
+            margin: 20px 10px;
+            box-shadow: 3px -3px 3px #dedede, -3px 3px 3px #dedede, -3px -3px 3px #dedede;
+            background-color: #f7f7f7;
+        }
+        .option{
+            padding: 10px 40px;
+        }
+        .title{
+            color: #333;
+            width: 130px;
+        }
+        .w150{
+            width: 150px;
+            float:left;
+        }
+        /*弹框样式*/
+        .sgBtn{width: 135px; height: 35px; line-height: 35px; margin-left: 10px; margin-top: 10px; text-align: center;
+            background-color: #0095D9; color: #FFFFFF; float: left; border-radius: 5px;}
+        .rightContent{
+            width: 30%;
+            /*border: 1px #dedede solid;*/
+            margin: 20px 10px;
+            box-shadow: 3px -3px 3px #dedede, -3px 3px 3px #dedede, -3px -3px 3px #dedede;
+            background-color: #f7f7f7;
+        }
+
+        /*上传框样式*/
+        .uploader { position:relative; display:inline-block; overflow:hidden; cursor:default; padding:0;
+            margin:10px 0px; -moz-box-shadow:0px 0px 5px #ddd; -webkit-box-shadow:0px 0px 5px #ddd;
+            box-shadow:0px 0px 5px #ddd; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; }
+        .filename { float:left; display:inline-block; outline:0 none; height:32px; width:180px; margin:0; padding:8px 10px; overflow:hidden; cursor:default; border:1px solid; border-right:0; font:9pt/100% Arial, Helvetica, sans-serif; color:#777; text-shadow:1px 1px 0px #fff; text-overflow:ellipsis; white-space:nowrap; -moz-border-radius:5px 0px 0px 5px; -webkit-border-radius:5px 0px 0px 5px; border-radius:5px 0px 0px 5px; background:#f5f5f5; background:-moz-linear-gradient(top, #fafafa 0%, #eee 100%); background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #fafafa), color-stop(100%, #f5f5f5)); filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fafafa', endColorstr='#f5f5f5', GradientType=0);
+            border-color:#ccc; -moz-box-shadow:0px 0px 1px #fff inset; -webkit-box-shadow:0px 0px 1px #fff inset; box-shadow:0px 0px 1px #fff inset; -moz-box-sizing:border-box; -webkit-box-sizing:border-box; box-sizing:border-box; }
+        .button1 { float:left; height:32px; display:inline-block; outline:0 none; padding:8px 12px; margin:0; cursor:pointer; border:1px solid; font:bold 9pt/100% Arial, Helvetica, sans-serif; -moz-border-radius:0px 5px 5px 0px; -webkit-border-radius:0px 5px 5px 0px; border-radius:0px 5px 5px 0px; -moz-box-shadow:0px 0px 1px #fff inset; -webkit-box-shadow:0px 0px 1px #fff inset; box-shadow:0px 0px 1px #fff inset; }
+        .uploader input[type=file] { position:absolute; top:0; right:0; bottom:0; border:0; padding:0; margin:0;
+            height:30px; cursor:pointer; filter:alpha(opacity=0); -moz-opacity:0; -khtml-opacity: 0; opacity:0; }
+        .w300{width: 300px;float:left;}
+        .w150{width: 150px;float:left;}
+        .w230{width: 250px;float:left;}
+        .form-x .form-group .label {width: 170px;}
+        .form-x .form-group .field {width: calc(100% - 170px);}
+    </style>
+
+</head>
+<body>
+<div class="panel admin-panel">
+    <div class="panel-head" id="add">
+        <strong>
+            <span class="icon-pencil-square-o"></span> 印章制作
+        </strong>
+    </div>
+    <div class="padding border-bottom">
+        <ul class="search" style="padding-left:10px;">
+            <li><a class="button border-main icon-plus-square-o"
+                   href="javaScript:window.location.href = document.referrer;"> 返回</a></li>
+        </ul>
+    </div>
+    <div class="ub">
+        <div class="body-content f-s-14 c-6">
+            <form method="post" class="form-x" action="" id="seal_review_from" enctype="multipart/form-data">
+                <input type="hidden" id="startTime" name="startTime" th:value="${apply.seal_start_time}"/>
+                <input type="hidden" id="endTime" name="endTime" th:value="${apply.seal_end_time}"/>
+                <input type="hidden" id="algorithm" name="algorithm" />
+                <input type="hidden" id="applyId" name="applyId" th:value="${apply.apply_id}"/>
+                <div class="ub option">
+                    <div class="title f-w">所属单位：</div>
+                    <div class="ub-f1" th:text="${apply.unit.unit_name}"></div>
+                </div>
+                <div class="ub option">
+                    <div class="title f-w">印章名称：</div>
+                    <div class="ub-f1" th:text="${apply.seal_name}"></div>
+                </div>
+                <div class="ub option">
+                    <div class="title f-w">印章类型：</div>
+                    <div class="ub-f1" th:text="${sealType.sealTypeName}"></div>
+                </div>
+                <div class="ub option">
+                    <div class="title f-w">查看附件：</div>
+                    <div class="ub-f1" >
+                        <a th:href="@{/download/attachment(applyId=${apply.apply_id})}" >
+                            <span>点击下载</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="ub option">
+                    <div class="title f-w">印章图片：</div>
+                    <div class="ub-f1" >
+                        <div id="gif_show" style="float:left"></div>
+                        <span style="color: #ff0000">&nbsp&nbsp&nbsp*</span>
+                    </div>
+                </div>
+                <div class="ub option">
+                    <div class="title f-w">上传图片：</div>
+                    <div class="ub-f1">
+                        <div class="uploader white">
+                            <input type="button" name="file"  value="上传GIF标准图"/>
+                            <input type="file" id="gifImg" name="gifImg"/>
+                            <input type="hidden" id="gifBase64" name="gifBase64"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="ub option">
+                    <div class="title f-w">印章可用产品类型：</div>
+                    <div class="ub-f1">
+
+                        <label th:each="type,typeStat:${typeList}">
+                            <input name="fileType"
+                                   type="checkbox"
+                                   th:value="${type}"
+                                   th:text="${type}"
+                                   checked
+                            />
+                        </label>
+
+                    </div>
+                </div>
+                <div class="ub option">
+                    <div class="title f-w">印章图像宽(mm)：</div>
+                    <div class="ub-f1" >
+                        <input type="text" class="w150" id="imgW" name="imgW" value="" oninput="value=value.replace(/[^\d]/g,'')"/>
+                        <span style="color: #ff0000">&nbsp&nbsp&nbsp*</span>
+                        &nbsp&nbsp&nbsp&nbsp
+                        <img id="msg" style="width: 25px;height: 25px" th:src="@{/images/logo-tip.gif}" />
+                    </div>
+                </div>
+                <div class="ub option">
+                    <div class="title f-w" >印章图像高(mm)：</div>
+                    <div class="ub-f1" >
+                        <input type="text" class="w150" id="imgH" name="imgH" value="" oninput="value=value.replace(/[^\d]/g,'')"/>
+                        <span style="color: #ff0000">&nbsp&nbsp&nbsp*</span>
+
+                        <span >（带 * 号的为必填项）</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="label">
+                        <label></label>
+                    </div>
+                    <div class="field">
+                        <button type="button" class="button bg-main icon-check-square-o"  id="submit" style="display: none" > 制作</button>
+                        &nbsp&nbsp&nbsp
+                        <button type="button" class="button bg-main icon-check-square-o" id="unlock"> 解除锁定</button>
+                        &nbsp&nbsp&nbsp
+                        <button type="button" class="button bg-main icon-check-square-o" id="reject"> 驳回</button>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+        <div class="rightContent ub-f1 ">
+            <div class="ub option">
+                <div class="title f-w">印章标准：</div>
+                <div class="ub-f1" >
+                    <select id="standard" name="standard"  class=" w150">
+                        <option value="">请选择印章标准</option>
+                        <div th:each="standard,standardStat:${standards}">
+                            <option th:value="${standard.id}"
+                                    th:text="${standard.standard_name}">自定义标准
+                            </option>
+                        </div>
+                    </select>
+                </div>
+            </div>
+            <div class="ub option" >
+                <div class="title f-w">证书来源：</div>
+                <div class="ub-f1">
+                    <select id="certGetType" name="certGetType"  class="w150">
+                        <div th:each="certSource,certSourceStat:${certSources}">
+                            <option th:value="${certSource.id}"
+                                    th:text="${certSource.source_name}">sysCreate
+                            </option>
+                        </div>
+                    </select>
+                </div>
+            </div>
+            <div class="ub option">
+                <div class="title f-w">UK型号：</div>
+                <div class="ub-f1">
+                    <select id="UKType" name="UKType" class="w150">
+                    </select>
+                </div>
+            </div>
+            <div class="ub option" style="display: none" id="readDisc">
+                <div class="title f-w">选择证书：</div>
+                <div class="ub-f1">
+                    <div class="uploader white">
+                        <input type="button" name="file"  value="选择磁盘证书"/>
+                        <input type="file" id="certDisc" name="certDisc"/>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="country" name="country" th:value="${'中国'}">
+            <input type="hidden" id="province" name="province" th:value="${apply.unit.unit_province}"  >
+            <input type="hidden" id="city" name="city" th:value="${apply.unit.unit_city}" >
+            <input type="hidden" id="certUnit" name="certUnit"  th:value="${apply.unit.unit_name}">
+            <input type="hidden" id="certDepartment" name="certDepartment"  th:value="${apply.unit.unit_name}">
+            <input type="hidden" id="certName" name="certName" th:value="${apply.seal_name}">
+            <div class="ub option">
+                <div class="ub-f1">
+                    <button type="button" class="button bg-main icon-check-square-o" id="getCert">获取证书</button>
+                    <input type="hidden" id="certId" name="certId" />
+                    <input type="hidden" id="ukId" name="ukId"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script  type="text/javascript" th:inline="javascript">
+
+    function getTheCheckBoxValue() {
+        var test = $("input[name='fileType']:checked");
+        var checkBoxValue = "";
+        test.each(function () {
+            var value = $(this).val();
+            checkBoxValue = checkBoxValue+value+"@"
+        });
+        return checkBoxValue;
+    }
+
+    $("#standard").change(function(){
+        if($("#standard").val()=="4"||$("#standard").val()=="5"||$("#standard").val()=="6"){
+            $("#algorithm").val(1);
+        }else{
+            $("#algorithm").val(2);
+        }
+    });
+
+    $("#demo").click(function(){
+        alert(getTheCheckBoxValue());
+    });
+
+    $("#standard").change(function(){
+        if($("#standard").val()=="1"||$("#standard").val()=="2"||$("#standard").val()=="4"){
+            $("#UKType").removeAttr("disabled");
+            //当选择UK印章的时候
+            let submitDate = {
+                "sealStandard": $("#standard").val(),
+            };
+            $.ajax({url: "/essplatform/make/getUKType", type: "post", data: submitDate,
+                success: function (data) {
+                    //返回成功后，添加select
+                    let obj = eval('('+ data +')');
+                    for(let i = 0; i < obj.length;i++){//循环遍历数据
+                        let ukType = obj[i];
+                        document.getElementById("UKType").options.add(new Option(ukType.type_name,ukType.id));
+                    }
+                },
+                error:function (data) {
+                    $('body').dialogbox({type:"normal",title:"操作失败", buttons:[{Text:"确认",
+                            ClickToClose:true, callback:function (dialog){}}],
+                        message:'您提交的信息有误！'
+                    });
+                }
+            });
+        }else{
+            document.getElementById("UKType").options.length=0;
+            $("#UKType").attr("disabled","disabled");
+        }
+    });
+    $("#unlock").click(function(){
+        let submitDate = {
+            "applyId": $("#applyId").val(),
+        };
+        $.ajax({
+            url: "/essplatform/make/unlockMake",
+            type: "post",
+            data: submitDate,
+            success: function (data) {
+                if(data == "success"){
+                    $('body').dialogbox({type:"normal",title:"系统提示", buttons:[{Text:"确认", ClickToClose:true,
+                            callback:function (dialog){
+                                window.location.href = document.referrer;
+                            }}],
+                        message:'接除锁定成功！'
+                    });
+                }else{
+                    $('body').dialogbox({type:"normal",title:"系统提示", buttons:[{Text:"确认", ClickToClose:true,
+                            callback:function (dialog){
+                                // window.history.go(-1)
+                            }
+                        }],
+                        message:'接触锁定失败！'
+                    });
+                }
+            },
+            error:function (data) {
+                $('body').dialogbox({type:"normal",title:"操作失败", buttons:[{Text:"确认", ClickToClose:true,
+                        callback:function (dialog){}
+                    }],
+                    message:'您提交的信息有误！'
+                });
+            }
+        });
+    });
+    $("#submit").click(function(){
+
+        //对印章可用产品的值进行处理
+        var fileType = getTheCheckBoxValue();
+        if (isNull(fileType)){
+            alert("印章可用类型不可为空，请勾选");
+            return;
+        }
+        if ($('#gifImg')[0].files[0]==null){
+            alert("请上传图片");
+            return;
+        }
+        if (isNull($('#imgW').val())){
+            alert("图片宽度不可为空");
+            return;
+        }else{
+            if ($('#imgW').val()<10){
+                alert("图片宽度不可小于10毫米");
+                return;
+            }else if ($('#imgW').val()>100){
+                alert("图片宽度不可大于100毫米");
+                return;
+            }
+            if ($('#imgW').val()>50){
+                alert("输入的印章宽度为"+$('#imgW').val());
+            }
+        }
+        if (isNull($('#imgH').val())){
+            alert("图片高度不可为空");
+            return;
+        }else{
+            if ($('#imgW').val()<10){
+                alert("图片高度不可小于10毫米");
+                return;
+            }else if ($('#imgW').val()>100){
+                alert("图片高度不可大于100毫米");
+                return;
+            }
+            if ($('#imgW').val()>50){
+                alert("输入的印章高度为"+$('#imgW').val());
+            }
+        }
+        if (isNull($('#standard').val())){
+            alert("印章标准不可为空");
+            return;
+        }
+        let submitDate = {
+            "applyId": $('#applyId').val(),
+            "gifImg": $('#gifBase64').val(),
+            "imgW": $('#imgW').val(),
+            "imgH": $('#imgH').val(),
+            "certId": $('#certId').val(),
+            "ukId": $('#ukId').val(),
+            "UKType": $('#UKType').val(),
+            "standard": $('#standard').val(),
+            "algorithm": $('#algorithm').val(),
+            "fileType": fileType
+        };
+
+        $.ajax({
+            url: "/essplatform/make/through",
+            type: "post",
+            data: submitDate,
+            // cache: false,
+            // processData: false,
+            // contentType: false,
+            async: false, //异步
+            success: function (data) {
+                if(data == "error"){
+                    $('body').dialogbox({type:"normal",title:"制作失败", buttons:[{Text:"确认", ClickToClose:true,
+                            callback:function (dialog){
+                                // window.history.go(-1)
+                            }
+                        }],
+                        message:'操作失败，请您重试！'
+                    });
+                }else{
+                    if($("#UKType").val() == ''||$("#UKType").val() == null ){
+                        $('body').dialogbox({type:"normal",title:"制作成功", buttons:[{Text:"确认", ClickToClose:true,
+                                callback:function (dialog){
+                                    window.location.href = document.referrer;
+                                }
+                            }],
+                            message:'印章制作已完成！'
+                        });
+                    }else{
+                        $('body').dialogbox({type:"normal",title:"制作成功", buttons:[{Text:"写入", ClickToClose:true,
+                                callback:function (dialog){
+                                    //通知和客户端下载
+                                    ClientDownload(data);
+                                }
+                            },{Text:"取消", ClickToClose:true,
+                                callback:function (dialog){
+                                    window.location.href = document.referrer;
+                                }
+                            }],
+                            message:'印章制作已完成！是否现在将印章信息写入USBKEY？'
+                        });
+                    }
+                }
+            },
+            error:function (data) {
+                $('body').dialogbox({type:"normal",title:"操作失败", buttons:[{Text:"确认", ClickToClose:true,
+                        callback:function (dialog){
+                        }
+                    }],
+                    message:'您提交的信息有误！'
+                });
+            }
+        });
+    });
+    //上传图片 转换base64 显示。
+    $("#gifImg").change(function(){
+        //清空图片内容
+        $("#gif_show").empty();
+        var fl=this.files.length;
+        for(var i=0;i<fl;i++){
+            var file = this.files[i];
+            //上传文件格式
+            var imgFileType = file.name.toLowerCase().split('.').splice(-1);
+            var imgFileSize = file.size/1024 + 'kb';
+            if((file.size/1024)<100){
+                if("gif" == imgFileType){
+                    var reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function(e){
+                        let img = e.target.result;
+                        let str = new Array(); //定义一数组
+                        str = img.split(","); //字符分割
+                        $("#gifBase64").val(str[1]);
+                        var imgstr='<img style="width:70px;height:70px;" src="'+e.target.result+'"/>';
+                        $("#gif_show").append(imgstr)
+                    };
+                }else{
+                    alert("文件格式错误，请重新上传");
+                    $("#upload_file").val("");
+                }
+            }else{
+                alert("请上传小于5兆的图片！");
+                $("#upload_file").val("");
+            }
+        }
+    });
+    // $("#certDisc").change(function(){
+    //     //清空图片内容
+    //     var fl=this.files.length;
+    //     for(var i=0;i<fl;i++){
+    //         var file = this.files[i];
+    //         //上传文件格式
+    //         var imgFileType = file.name.toLowerCase().split('.').splice(-1);
+    //         var imgFileSize = file.size/1024 + 'kb';
+    //         if("pfx" == imgFileType){
+    //             var reader = new FileReader();
+    //             reader.readAsDataURL(file);
+    //             reader.onload = function(e){
+    //                 let str = e.target.result;
+    //                 let strs = new Array(); //定义一数组
+    //                 strs = str.split(","); //字符分割
+    //                 uploadCert(strs[1]);
+    //                 $("#certDisc").empty();
+    //             };
+    //         }else{
+    //             alert("文件格式错误，请重新 上传");
+    //             //重置file Input 值
+    //             file.value = '';
+    //         }
+    //     }
+    // });
+    $("#certGetType").click(function(){
+        let certGetType = $("#certGetType").val();
+        if (certGetType == 2){
+            //显示上传证书项
+            $("#readDisc").show();
+            $("#getCert").html('上传证书');
+        }else{
+            $("#readDisc").hide();
+            $("#getCert").html('获取证书');
+        }
+
+    });
+    $("#getCert").click(function(){
+        let certGetType = $("#certGetType").val();
+        if (certGetType == 1){
+            //新申请证书
+            //获取pfx和cer格式的证书
+            let submitDate = {
+                "country": $("#country").val(),
+                "province": $("#province").val(),
+                "city": $("#city").val(),
+                "unit": $("#certUnit").val(),
+                "department": $("#certDepartment").val(),
+                "name": $("#certName").val(),
+                "startTime": $("#startTime").val(),
+                "endTime": $("#endTime").val(),
+                "algorithm": $("#algorithm").val(),
+            };
+            $.ajax({
+                url: "/essplatform/make/getCertPair",
+                type: "post",
+                data: submitDate,
+                success: function (data) {
+                    let resultMessage = "未知";
+                    if ("error"==data){
+                        resultMessage = "证书申请失败";
+                    }else{
+                        $("#certId").val(data);
+                        $("#ukId").val("");
+                        $("#getCert").attr("style","display:block;");
+                        resultMessage = "证书申请成功";
+                        $("#submit").show();
+                    }
+                    $('body').dialogbox({type:"normal",title:"系统提示",
+                        buttons:[{
+                            Text:"确认",
+                            ClickToClose:true,
+                            callback:function (dialog){
+                            }
+                        }],
+                        message:resultMessage
+                    });
+                },
+                error:function (data) {
+                    $('body').dialogbox({type:"normal",title:"操作失败",
+                        buttons:[{
+                            Text:"确认",
+                            ClickToClose:true,
+                            callback:function (dialog){
+                            }
+                        }],
+                        message:'您提交的信息有误！'
+                    });
+                }
+            });
+        }else if(certGetType == 3){
+            if($("#UKType").val() == null){
+                $('body').dialogbox({type:"normal",title:"系统提示", buttons:[{Text:"确认", ClickToClose:true,
+                        callback:function (dialog){
+                        }
+                    }],
+                    message:"UK类型为空，不能获取UK证书"
+                });
+            }else{
+                $.ajax({
+                    url: "/essplatform/download/getUKTypeCodeById",
+                    type: "post",
+                    data: {"id":$("#UKType").val()},
+                    success: function (data) {
+                        let data1 = "{\"UKTYPE\":\""+data+"\",\"STANDARD\":\""+$("#standard").val()+"\"}";
+                        //读取UK
+                        $.ajax({
+                            url: "http://127.0.0.1:9990/GetUKInfo",
+                            type: "post",
+                            data: {"RND": randomFrom(),"UKINFO":data1},
+                            success: function (data) {
+                                if (data.indexOf("ERROR") != -1) {
+                                    let obj = eval('('+ data +')');
+                                    $('body').dialogbox({type:"normal",title:"系统提示", buttons:[{Text:"确认", ClickToClose:true,
+                                            callback:function (dialog){
+                                            }
+                                        }],
+                                        message:obj.ERROR
+                                    });
+                                } else {
+                                    let obj = eval('('+ data +')');
+                                    let uk_id = obj.UKID;
+                                    let cert = obj.CERT;
+                                    //上传证书获取证书id
+                                     let result_a = uploadCert(cert,'','',1);
+                                     if (result_a){
+                                         //赋值UK ID
+                                         $("#ukId").val(uk_id);
+                                         $("#submit").show();
+                                     }
+                                }
+                            },
+                            error:function (data) {
+                                $('body').dialogbox({type:"normal",title:"系统提示", buttons:[{Text:"确认", ClickToClose:true,
+                                        callback:function (dialog){
+                                        }
+                                    }],
+                                    message:"客户端访问异常，请重试！"
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        }else if(certGetType == 2){
+            var file = $('#certDisc')[0].files[0];
+            if (file==null){
+                alert("证书文件不能为空，请重新选择！")
+            }else{
+                //上传文件格式
+                var imgFileType = file.name.toLowerCase().split('.').splice(-1);
+                var imgFileSize = file.size/1024 + 'kb';
+                if("cer" == imgFileType){
+                    var reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function(e){
+                        let str = e.target.result;
+                        let strs = new Array(); //定义一数组
+                        strs = str.split(","); //字符分割
+                        let result_a = uploadCert(strs[1],'','',1);
+                        if (result_a){
+                            $("#certDisc").empty();
+                            //隐藏获取证书按钮
+                            $("#submit").show();
+                        }
+
+                    };
+                }else if("pfx" == imgFileType){
+                    var reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function(e){
+                        let str = e.target.result;
+                        let strs = new Array(); //定义一数组
+                        strs = str.split(","); //字符分割
+                        let txt=  "请输入证书密码：";
+                        window.wxc.xcConfirm(txt, window.wxc.xcConfirm.typeEnum.input,{
+                            onOk:function(v){
+                                let result_a = uploadCert('',strs[1],v,2);
+                                if (result_a){
+                                    $("#certDisc").empty();
+                                    //隐藏获取证书按钮
+                                    $("#submit").show();
+                                }
+                            }
+                        });
+                    };
+                }else{
+                    alert("文件格式错误，请重新 上传");
+                    //重置file Input 值
+                    file.value = '';
+                }
+            }
+        }
+    });
+    function randomFrom() {let d = new Date();return d.getTime();}
+    //通知客户当下载印章信息
+    function ClientDownload(sealId) {
+        $.ajax({
+            url: "/essplatform/download/getUKTypeCodeById",
+            type: "post",
+            data: {"id":$("#UKType").val()},
+            success: function (data) {
+                let socketIP =[[${socketIP}]];
+                let d = "{\"SEALID\":\""+sealId+"\",\"PORT\":\"5566\",\"IP\":\""+socketIP+"\",\"UKTYPE\":\""+data+"\",\"STANDARD\":\""+$("#standard").val()+"\",\"UKID\":\""+$("#ukId").val()+"\"}";
+                $.ajax({
+                    url: "http://127.0.0.1:9990/WriteAKSealInfo",
+                    type: "post",
+                    data: {"RND": randomFrom(),"ASN1INFO":d},
+                    success: function (data) {
+                        if (data.indexOf("ERROR") != -1) {
+                            let obj = eval('('+ data +')');
+                            $('body').dialogbox({type:"normal",title:"系统提示", buttons:[{Text:"确认", ClickToClose:true,
+                                    callback:function (dialog){
+                                        window.location.href = document.referrer;
+                                    }
+                                }],
+                                message:obj.ERROR
+                            });
+                        }else{
+                            $('body').dialogbox({type:"normal",title:"系统提示", buttons:[{Text:"确认", ClickToClose:true,
+                                    callback:function (dialog){
+                                        window.location.href = document.referrer;
+                                    }
+                                }],
+                                message:"USKBKEY写入成功"
+                            });
+                        }
+                    },
+                    error:function (data) {
+                        $('body').dialogbox({type:"normal",title:"系统提示", buttons:[{Text:"确认", ClickToClose:true,
+                                callback:function (dialog){
+                                }
+                            }],
+                            message:"客户端访问异常，请重试！"
+                        });
+                    }
+                });
+            }
+        });
+    }
+    //上传证书动作
+    function uploadCert(certBase64,pfxBase64,password,type) {
+        let result = false;
+        let submitDate = {
+            "country": $("#country").val(),
+            "province": $("#province").val(),
+            "city": $("#city").val(),
+            "unit": $("#certUnit").val(),
+            "department": $("#certDepartment").val(),
+            "name": $("#certName").val(),
+            "certBase64":certBase64,
+            "pfxBase64":pfxBase64,
+            "password":password,
+            "type":type,
+        };
+        $.ajax({
+            url: "/essplatform/make/upLoadCert",
+            type: "post",
+            data: submitDate,
+            async: false,
+            success: function (data) {
+                if (data.indexOf("error") != -1) {
+                    result = false;
+                    let obj = eval('('+ data +')');
+                    $('body').dialogbox({type:"normal",title:"系统提示", buttons:[{Text:"确认", ClickToClose:true,
+                            callback:function (dialog){
+
+                            }
+                        }],
+                        message:obj.error
+                    });
+                }else{
+                    result = true;
+                    $('body').dialogbox({type:"normal",title:"系统提示", buttons:[{Text:"确认", ClickToClose:true,
+                            callback:function (dialog){
+                                $("#certId").val(data);
+                                $("#getCert").attr("style","display:block;");
+                            }
+                        }],
+                        message:"证书获取成功"
+                    });
+                }
+            },
+            error:function (data) {}
+        });
+        return result;
+    }
+    //驳回动作
+    $("#reject").click(function(){
+        let txt=  "请输入驳回理由：";
+        window.wxc.xcConfirm(txt, window.wxc.xcConfirm.typeEnum.input,{
+            onOk:function(v){
+                $.ajax({
+                    url: "/essplatform/make/make_reject",
+                    type: "get",
+                    data: {"applyId": $("#applyId").val(),"message":v},
+                    success: function (data) {
+                        if(data == "success"){
+                            $('body').dialogbox({
+                                type:"normal",title:"驳回成功",
+                                buttons:[{
+                                    Text:"确认",
+                                    ClickToClose:true,
+                                    callback:function (dialog){
+                                        window.location.href = document.referrer;
+                                    }
+                                }],
+                                message:'驳回成功!'
+                            });
+                        }else{
+                            $('body').dialogbox({
+                                type:"normal",title:"驳回失败",
+                                buttons:[{
+                                    Text:"确认",
+                                    ClickToClose:true,
+                                    callback:function (dialog){
+                                        // window.history.go(-1)
+                                    }
+                                }],
+                                message:'驳回信息提交失败，请您重试！'
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    });
+    //印章图片提示信息
+    $("#msg").click(function(){
+        $('body').dialogbox({
+            type:"normal",title:"印章大小提示",
+            buttons:[{
+                Text:"确认",
+                ClickToClose:true,
+                callback:function (dialog){
+                }
+            }],
+            message:'1、党章直径为4.2cm\n' +
+                '2、工会章直径为4.2cm\n' +
+                '3、 国有企业、国营股份制企业等公章（包括公司章、部门章）一律为圆形，直径为4.2cm\n' +
+                '4、各类专用章直径为4.0cm\n' +
+                '5、其他企业所属部门及个体、私营企业的印章规格为圆形，直径为3.8cm\n' +
+                '6、工商企业合同专用章不论何种经济成分一律为圆形，直径为5.8cm\n' +
+                '7、有限责任公司印章一律为圆形，直径为4.0cm，专用章和公司所属部门印章直径为3.8cm\n' +
+                '8、股份有限公司印章 一律为圆形，直径为4.2cm，专用章和公司所属部门 印章 直径为4.0cm\n' +
+                '9、中外合资（合作）、外商独资经营企业的印章规格为椭圆形，横径为4.5cm，竖径为3.0cm\n' +
+                '10、地方性社会团体的印章规格为圆形，直径为4.2cm\n' +
+                '“若有实物印章，请以实物印章尺寸为准”'
+        });
+    });
+
+</script>
+</html>

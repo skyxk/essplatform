@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chen.dao.BusinessSysMapper">
+    <resultMap type="Business_System" id="business_SystemMap">
+        <id property="b_sys_id" column="b_sys_id"/>
+        <result property="b_name" column="b_name"/>
+        <result property="server_ip" column="server_ip"/>
+        <result property="top_unit_id" column="top_unit_id"/>
+    </resultMap>
+
+    <select id="findAllServerIp" resultType="String">
+        SELECT server_ip FROM business_sys
+    </select>
+    <select id="findBusinessSysById" resultMap="business_SystemMap">
+        SELECT * FROM business_sys where b_sys_id = #{b_sys_id}
+    </select>
+</mapper>

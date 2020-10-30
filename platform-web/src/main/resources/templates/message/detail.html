@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="renderer" content="webkit">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/pintuer.css}" href="../../static/css/pintuer.css">
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="../../static/css/admin.css">
+    <link rel="stylesheet" th:href="@{/css/common.css}" href="../../static/css/common.css">
+    <script th:src="@{/js/jquery-3.2.1.min.js}" src="../../static/js/jquery-3.2.1.min.js"></script>
+    <script th:src="@{/js/bootstrap.js}" src="../../static/js/bootstrap.js"></script>
+    <!--    弹框插件-->
+    <link rel="stylesheet" type="text/css" th:href="@{/xcConfirm/css/xcConfirm.css}"
+          href="../../static/xcConfirm/css/xcConfirm.css"/>
+    <script th:src="@{/xcConfirm/js/xcConfirm.js}" type="text/javascript" charset="utf-8"
+            src="../../static/xcConfirm/js/xcConfirm.js"></script>
+
+    <link rel="stylesheet" th:href="@{/jquery-dialogbox/jquery.dialogbox-1.0.css}"
+          href="../../static/jquery-dialogbox/jquery.dialogbox-1.0.css">
+    <script th:src="@{/jquery-dialogbox/jquery.dialogbox-1.0.js}"
+            src="../../static/jquery-dialogbox/jquery.dialogbox-1.0.js"></script>
+
+    <script th:src="@{/js/pintuer.js}" src="../../static/js/pintuer.js"></script>
+    <script th:src="@{/js/quit.js}" src="../../static/js/quit.js"></script>
+    <style type="text/css">
+        /*弹框样式*/
+        .sgBtn{width: 135px; height: 35px; line-height: 35px; margin-left: 10px; margin-top: 10px; text-align: center;
+            background-color: #0095D9; color: #FFFFFF; float: left; border-radius: 5px;}
+        .contentClass{
+            padding: 20px;
+        }
+        .option{
+            line-height: 40px;
+            height: 40px;
+        }
+        .title{
+            width: 70px;
+        }
+        .cardClass{
+            padding: 20px;
+            width: 56%;
+            box-shadow: 3px -3px 3px #dedede, -3px 3px 3px #dedede, -3px -3px 3px #dedede;
+            background-color: #f7f7f7;
+        }
+    </style>
+</head>
+<body>
+
+<div class="panel admin-panel">
+    <div class="panel-head"><strong><span class="icon-pencil-square-o"></span> 消息内容</strong></div>
+    <div class="padding border-bottom">
+        <ul class="search" style="padding-left:10px;">
+            <li><a class="button border-main icon-plus-square-o" href="javaScript:window.history.go(-1)"> 返回</a></li>
+        </ul>
+    </div>
+    <div class="contentClass">
+        <form method="post" class="form-x" action="">
+            <div class="cardClass">
+                <div class="ub option">
+                    <div class="title f-w">标题：</div>
+                    <div class="ub-f1" th:text="${message.messageTitle}"></div>
+                </div>
+                <div class="ub option">
+                    <div class="title f-w">发送时间：</div>
+                    <div class="ub-f1" th:text="${message.sendTime}"></div>
+                </div>
+                <div class="ub option">
+                    <div class="title f-w">内容：</div>
+                    <div class="ub-f1" th:text="${message.messageContent}"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+<!--    <div class="ub option m-l-20 m-b-20">-->
+<!--        <div class="field">-->
+<!--            <button class="button bg-main icon-check-square-o" onclick="messageMethodType_5('${message.messageNo}')"> 延期生效</button>-->
+<!--        </div>-->
+<!--    </div>-->
+</div>
+<script type="text/javascript">
+    //类型：驳回
+    function messageMethodType_1(messageNo) {
+        $.ajax({
+            url: "${pageContext.request.contextPath}/message/messageMethodType_1.html",
+            type: "get",
+            data:  {"messageNo":messageNo},
+            success: function (data)
+            {
+                $('body').dialogbox({
+                    type:"normal",title:"选择操作",
+                    buttons:[{
+                        Text:"返回列表",
+                        ClickToClose:true,
+                        callback:function (dialog){
+                            window.location.href = document.referrer;
+                        }
+                    }],
+                    message:'申请信息已注销！'
+                });
+
+            }
+        });
+    }
+</script>
+</body>
+</html>

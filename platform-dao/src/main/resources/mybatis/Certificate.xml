@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chen.dao.CertificateMapper">
+
+    <resultMap type="com.chen.entity.Certificate" id="certificateMap">
+        <id property="cert_id" column="cert_id"/>
+        <result property="cert_name" column="cert_name"/>
+        <result property="algorithm" column="algorithm"/>
+        <result property="country" column="country"/>
+        <result property="province" column="province"/>
+        <result property="city" column="city"/>
+        <result property="unit" column="unit"/>
+        <result property="department" column="department"/>
+        <result property="issuer" column="issuer"/>
+        <result property="issuer_unit" column="issuer_unit"/>
+        <result property="cer_base64" column="cer_base64"/>
+        <result property="pfx_base64" column="pfx_base64"/>
+        <result property="start_time" column="start_time"/>
+        <result property="end_time" column="end_time"/>
+        <result property="apply_time" column="apply_time"/>
+        <result property="cert_psw" column="cert_psw"/>
+        <result property="cert_state" column="cert_state"/>
+        <result property="state" column="state"/>
+    </resultMap>
+
+    <insert id="addCertificate"  parameterType="com.chen.entity.Certificate" >
+        INSERT INTO
+        certificate(cert_id,algorithm,cert_name,country,province,city,unit,issuer,issuer_unit,cer_base64,pfx_base64,start_time,
+        end_time,apply_time,cert_psw,cert_state,state)
+        values
+         (#{cert_id},#{algorithm},#{cert_name},#{country},#{province},#{city},#{unit},#{issuer},#{issuer_unit},#{cer_base64},#{pfx_base64},#{start_time},
+         #{end_time},#{apply_time},#{cert_psw},#{cert_state},#{state})
+    </insert>
+
+    <select id="findCertificateById" parameterType="java.lang.String" resultMap="certificateMap">
+        SELECT * FROM certificate
+        WHERE cert_id = #{cert_id}
+    </select>
+
+    <select id="findAlgorithm"  resultType="com.chen.entity.Algorithm">
+        SELECT * FROM algorithm  where state = 1 ORDER BY a_order
+    </select>
+
+    <select id="findCertSource"  resultType="com.chen.entity.CertSource">
+        SELECT * FROM cert_source  where state = 1 ORDER BY so_order
+    </select>
+
+    <update id="updateCertificate">
+        UPDATE certificate
+        <set>
+            <if test="cerName != null">
+                cerName = #{cerName},
+            </if>
+            <if test="algorithm != null">
+                algorithm = #{algorithm},
+            </if>
+            <if test="cerClass != null">
+                cerClass = #{cerClass},
+            </if>
+            <if test="issuer != null">
+                issuer = #{issuer},
+            </if>
+            <if test="issuerUnitId != null">
+                issuerUnitId = #{issuerUnitId},
+            </if>
+            <if test="country != null">
+                country = #{country},
+            </if>
+            <if test="certificateVersion != null">
+                certificateVersion = #{certificateVersion},
+            </if>
+            <if test="province != null">
+                province = #{province},
+            </if>
+            <if test="city != null">
+                city = #{city},
+            </if>
+            <if test="certUnit != null">
+                certUnit = #{certUnit},
+            </if>
+            <if test="certDepartment != null">
+                certDepartment = #{certDepartment},
+            </if>
+            <if test="cerBase64 != null">
+                cerBase64 = #{cerBase64},
+            </if>
+            <if test="pfxBase64 != null">
+                pfxBase64 = #{pfxBase64},
+            </if>
+
+        </set>
+        where certificateId = #{certificateId}
+    </update>
+
+</mapper>

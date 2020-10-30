@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en" class="no-ie" style="overflow:hidden;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="renderer" content="webkit"/>
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/pintuer.css}" href="../../static/css/pintuer.css"/>
+    <link rel="stylesheet" th:href="@{/css/page.css}" href="../../static/css/page.css">
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="../../static/css/admin.css"/>
+    <link rel="stylesheet" th:href="@{/css/common.css}" href="../../static/css/common.css"/>
+    <script th:src="@{/js/jquery-3.2.1.min.js}" src="../../static/js/jquery-3.2.1.min.js"></script>
+    <script th:src="@{/js/bootstrap.js}" src="../../static/js/bootstrap.js"></script>
+    <!--    弹框插件-->
+    <link rel="stylesheet" type="text/css" th:href="@{/xcConfirm/css/xcConfirm.css}"
+          href="../../static/xcConfirm/css/xcConfirm.css"/>
+    <script th:src="@{/xcConfirm/js/xcConfirm.js}" type="text/javascript" charset="utf-8"
+            src="../../static/xcConfirm/js/xcConfirm.js"></script>
+
+    <link rel="stylesheet" th:href="@{/jquery-dialogbox/jquery.dialogbox-1.0.css}"
+          href="../../static/jquery-dialogbox/jquery.dialogbox-1.0.css"/>
+    <script th:src="@{/jquery-dialogbox/jquery.dialogbox-1.0.js}"
+            src="../../static/jquery-dialogbox/jquery.dialogbox-1.0.js"></script>
+    <script th:src="@{/js/pintuer.js}" src="../../static/js/pintuer.js"></script>
+    <script th:src="@{/js/quit.js}" src="../../static/js/quit.js"></script>
+</head>
+<body>
+
+<form method="post" action="" id="listform">
+    <div class="panel admin-panel">
+        <div class="padding border-bottom">
+            <ul class="search" style="padding-left:10px;">
+                <li><a class="button border-main icon-plus-square-o"
+                       th:href="@{/unit/page(openUnitId=${unit.unit_id})}">返回</a>
+                    <input type="hidden" id="unitId" name="unitId" th:value="${unit.unit_id}"/>
+
+                </li>
+                <li>
+                    <input type="text" placeholder="输入印章名称关键字" id="keywords" class="input" style="width: 200px;"/>
+                </li>
+                <li>
+                    <button type="button" class="button icon-search" style="width: 100px;" onclick="selectSeal()">查找</button>
+                </li>
+            </ul>
+        </div>
+        <table class="table table-hover text-center">
+            <tr>
+                <th width="10%">印章名称</th>
+                <th width="10%">制作时间</th>
+                <th width="10%">状态</th>
+                <th width="10%">操作</th>
+            </tr>
+            <tr th:each="seal,sealStat:${pageBean.list}" >
+                <td th:text="${seal.seal_name}">XXX省烟草专卖局章</td>
+                <td th:text="${seal.input_time}">2020/1/7 11:22:33</td>
+                <td th:switch="${seal.state}">
+                    <span th:case="'1'">有效</span>
+                    <span th:case="'2'">无效</span>
+                    <span th:case="*">未知</span>
+                </td>
+                <td>
+                    <div class="button-group">
+                        <a class="button border-red" th:href="@{/seal/detail(sealId=${seal.seal_id})}">详细</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>
+<div class="page-icon">
+
+    <span class="page-next">
+            共<span th:text="${pageBean.totalRecord}">10</span>记录
+    </span>
+    <a class="page-next" href="javascript:pageLast('4');">首页</a>
+    <a class="page-last" href="javascript:pageLast('1');">上一页</a>
+    <span class="page-next" >
+            当前第<span th:text="${pageBean.pageNum}">1</span>页
+    </span>
+    <a class="page-next" href="javascript:pageLast('2');">下一页</a>
+    <a class="page-next" href="javascript:pageLast('3');">末页</a>
+    <span class="page-next">
+            共<span th:text="${pageBean.totalPage}">10</span>页
+    </span>
+
+</div>
+</body>
+
+<script  type="text/javascript" th:inline="javascript">
+    function pageLast(type) {
+        let pageNum = [[${pageBean.pageNum}]];
+        let start = 1;
+        let end = [[${pageBean.totalPage}]];
+        if (type=="1"){
+            pageNum = pageNum-1;
+        }else if(type=="2"){
+            pageNum = pageNum+1;
+        }else if(type=="3"){
+            pageNum = end;
+        }else if(type=="4"){
+            pageNum = start;
+        }
+        if (pageNum<start){
+            $('body').dialogbox({
+                type:"normal",title:"系统提示",
+                buttons:[{
+                    Text:"确认",
+                    ClickToClose:true,
+                    callback:function (dialog){}
+                }],
+                message:"当前已经是第一页"
+            });
+        }
+        if (pageNum>end){
+            $('body').dialogbox({
+                type:"normal",title:"系统提示",
+                buttons:[{
+                    Text:"确认",
+                    ClickToClose:true,
+                    callback:function (dialog){}
+                }],
+                message:"当前已经是最后一页"
+            });
+        }
+        if (start<=pageNum&&pageNum<=end){
+            window.location.href = "/essplatform/seal/list?unitId="+[[${unit.unit_id}]]+"&pageNum="+pageNum;
+        }
+    }
+    function selectSeal() {
+        let keywords =  $('#keywords').val();
+        window.location.href = "/essplatform/seal/selectSealByName?keyword="+keywords+"&unitId="+$('#unitId').val();
+    }
+</script>
+</html>

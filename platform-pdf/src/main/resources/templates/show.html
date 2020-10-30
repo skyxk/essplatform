@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en" class="no-ie" style="overflow:hidden;">
+<head>
+    <meta charset="UTF-8"/>
+    <title>PDF阅读</title>
+    <script type="text/javascript" src="/own/js/jquery-3.2.1.mini.js" th:src="@{/own/js/jquery-3.2.1.mini.js}"></script>
+    <script type="text/javascript"
+            src="/bootstrap-3.3.7-dist/js/bootstrap.js" th:src="@{/bootstrap-3.3.7-dist/js/bootstrap.js}"></script>
+    <script type="text/javascript" src="/layui/layui.js" th:src="@{/layui/layui.js}"></script>
+    <script type="text/javascript" src="/jquery-ui-1.12.1/jquery-ui.js" th:src="@{/jquery-ui-1.12.1/jquery-ui.js}"></script>
+    <script type="text/javascript" src="/own/my.js" th:src="@{/own/my.js}"></script>
+    <script type="text/javascript" src="/mobile/jquery.ui.touch-punch.js" th:src="@{/mobile/jquery.ui.touch-punch.js}"></script>
+    <script type="/layui/layui.all.js" th:src="@{/layui/layui.all.js}"></script>
+    <script type="text/javascript" src="/own/js/addSealjs.js" th:src="@{/own/js/show.js}"></script>
+
+
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.css"  th:href="@{/bootstrap-3.3.7-dist/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" href="/font-awesome-4.7.0/css/font-awesome.css"
+          th:href="@{/font-awesome-4.7.0/css/font-awesome.css}"  />
+    <link rel="stylesheet" href="/layui/css/layui.css"      th:href="@{/layui/css/layui.css}" />
+    <link rel="stylesheet" href="/jquery-ui-1.12.1/jquery-ui.css" th:href="@{/jquery-ui-1.12.1/jquery-ui.css}" />
+    <link rel="stylesheet" href="/own/css/addSealcss.css" th:href="@{/own/css/addSealcss.css}" />
+
+</head>
+<body>
+
+<div id="top">
+    <div style="line-height: 60px;
+	font-family:微软雅黑;
+	font-size: large;
+	padding-left: 5%;
+	color: white;
+	float: left;
+	background-color: rgb(0, 138, 125);">ESS-PDF阅读</div>
+</div>
+
+<div id="center">
+    <div id="view">
+        <div class="page" th:each="picPath,iterStat: ${pdfImagesList}">
+            <div alt="" class="pic" th:data-src="${picPath.picPath}"  th:id="${iterStat.count}" th:page="${picPath.pageSize}" >
+            </div>
+            <span style="color: rgb(0, 138, 125);">
+                第
+                <span class="picNum" th:text="${iterStat.count}"></span>
+                页/共
+                <span class="picNum" th:text="${iterStat.size}"></span>
+                页
+            </span>
+        </div>
+    </div>
+    <div id="chose">
+        <div class="list-group" style="	margin-left: 10%;">
+            <span th:if="${verifyResultList.size() == 0}">
+                此文档中没有发现签章
+            </span>
+            <div>
+                <div style="width: 100%;margin-top: 10%">
+                    <a href="javascript:window.close();"> <button class="btn btn-primary" style="width: 100%">关闭当前页面</button></a>
+                </div>
+            </div>
+            <div th:each="verifyResult,iterStat: ${verifyResultList}">
+
+                <div style="font-size:medium;">
+                    <span class="picNum" th:text="${iterStat.count+'，签章：'+verifyResult.sealName}"></span>
+                </div>
+                <div  style="font-size:small;" >
+                    <span th:if="${verifyResult.documentVerify== 'true'}">
+                             自应用本签名以来，本签名控制的文档修订版次尚未被更改。
+                    </span>
+                    <span th:if="${verifyResult.documentVerify== 'false'}">
+                            自应用本签名以来，本签名控制的文档被修改,签名无效。
+                    </span>
+<!--                    <span th:if="${verifyResult.completeVerify== 'false'}">-->
+<!--                            但在其后，文档已被更改。-->
+<!--                    </span>-->
+                </div>
+                <div  style="font-size:small;">
+                    <span th:if="${verifyResult.certVerify== 'true'}">
+                        签名证书经验证后，确认为可信任签名的证书颁发者。
+                    </span>
+                    <span th:if="${verifyResult.certVerify== 'false'}">
+                        签名者身份未知，因为其父证书不在您的可信任列表中。
+                    </span>
+                </div>
+                <br/>
+                <br/>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

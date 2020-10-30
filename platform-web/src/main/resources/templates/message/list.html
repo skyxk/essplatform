@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="renderer" content="webkit">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/pintuer.css}" href="../../static/css/pintuer.css">
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="../../static/css/admin.css">
+    <link rel="stylesheet" th:href="@{/css/common.css}" href="../../static/css/common.css">
+    <script th:src="@{/js/jquery-3.2.1.min.js}" src="../../static/js/jquery-3.2.1.min.js"></script>
+    <script th:src="@{/js/bootstrap.js}" src="../../static/js/bootstrap.js"></script>
+    <!--    弹框插件-->
+    <link rel="stylesheet" type="text/css" th:href="@{/xcConfirm/css/xcConfirm.css}"
+          href="../../static/xcConfirm/css/xcConfirm.css"/>
+    <script th:src="@{/xcConfirm/js/xcConfirm.js}" type="text/javascript" charset="utf-8"
+            src="../../static/xcConfirm/js/xcConfirm.js"></script>
+
+    <link rel="stylesheet" th:href="@{/jquery-dialogbox/jquery.dialogbox-1.0.css}"
+          href="../../static/jquery-dialogbox/jquery.dialogbox-1.0.css">
+    <script th:src="@{/jquery-dialogbox/jquery.dialogbox-1.0.js}"
+            src="../../static/jquery-dialogbox/jquery.dialogbox-1.0.js"></script>
+
+    <script th:src="@{/js/pintuer.js}" src="../../static/js/pintuer.js"></script>
+    <script th:src="@{/js/quit.js}" src="../../static/js/quit.js"></script>
+
+</head>
+<body>
+
+<form method="post" action="" id="listform">
+    <div class="panel admin-panel">
+        <div class="panel-head"><strong class="icon-reorder">消息列表</strong> </div>
+        <div class="padding border-bottom">
+            <ul class="search" style="padding-left:10px;">
+                <li><a class="button border-main icon-plus-square-o" href="javaScript:window.history.go(-1)"> 返回</a></li>
+            </ul>
+        </div>
+        <table class="table table-hover text-center">
+            <tr>
+                <th width="15%">标题</th>
+                <th width="15%">发送时间</th>
+                <th width="15%">发送人</th>
+                <th width="15%">操作</th>
+            </tr>
+            <volist name="list" id="vo">
+                <tr th:each="message,messageStat:${messageList}" th:id="${message.messageNo}">
+                    <td th:text="${message.messageTitle}"></td>
+                    <td th:text="${message.sendTime}"></td>
+                    <td th:text="${message.senderUser.person.person_name}"></td>
+                    <td>
+                        <div class="button-group">
+                            <a class="button border-green" th:href="@{'/message/detail?messageNo='+${message.messageNo}}">
+                                <span></span> 查看</a>
+                            <a class="button border-red"  th:href="@{'javascript:destroyMessage('+'\''+${message.messageNo}+'\''+')'}">
+                                <span></span> 删除</a>
+                        </div>
+                    </td>
+                </tr>
+            </volist>
+        </table>
+    </div>
+</form>
+<script type="text/javascript">
+    function destroyMessage(messageNo) {
+        $('body').dialogbox({
+            type:"normal",title:"确认删除",
+            buttons:[{
+                Text:"确认",
+                ClickToClose:true,
+                callback:function (dialog){
+                    $.ajax({
+                        url: "/essplatform/message/delete",
+                        type: "get",
+                        data: {"messageNo":messageNo},
+                        success: function (data) {
+                            if(data == "success"){
+                                var id = "#"+messageNo;
+                                $(id).remove();
+                            }else{
+                                $('body').dialogbox({
+                                    type:"normal",title:"系统提示",
+                                    buttons:[{
+                                        Text:"确认",
+                                        ClickToClose:true,
+                                        callback:function (dialog){
+                                        }
+                                    }],
+                                    message:'服务器操作失败！'
+                                });
+                            }
+                        },
+                        error: function (data) {
+                            $('body').dialogbox({
+                                type:"normal",title:"系统提示",
+                                buttons:[{
+                                    Text:"确认",
+                                    ClickToClose:true,
+                                    callback:function (dialog){
+                                        window.location.href = document.referrer;
+                                    }
+                                }],
+                                message:'浏览器操作失败！'
+                            });
+                        }
+                    });
+                }
+            }],
+            message:"删除本条驳回提示！"
+        });
+    }
+</script>
+</body>
+</html>

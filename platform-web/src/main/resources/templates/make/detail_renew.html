@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en" class="no-ie" style="overflow:hidden;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="renderer" content="webkit"/>
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/pintuer.css}" href="../../static/css/pintuer.css"/>
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="../../static/css/admin.css"/>
+    <link rel="stylesheet" th:href="@{/css/common.css}" href="../../static/css/common.css"/>
+    <script th:src="@{/js/jquery-3.2.1.min.js}" src="../../static/js/jquery-3.2.1.min.js"></script>
+    <script th:src="@{/js/bootstrap.js}" src="../../static/js/bootstrap.js"></script>
+    <!--    弹框插件-->
+    <link rel="stylesheet" type="text/css" th:href="@{/xcConfirm/css/xcConfirm.css}"
+          href="../../static/xcConfirm/css/xcConfirm.css"/>
+    <script th:src="@{/xcConfirm/js/xcConfirm.js}" type="text/javascript" charset="utf-8"
+            src="../../static/xcConfirm/js/xcConfirm.js"></script>
+    <link rel="stylesheet" th:href="@{/jquery-dialogbox/jquery.dialogbox-1.0.css}"
+          href="../../static/jquery-dialogbox/jquery.dialogbox-1.0.css"/>
+    <script th:src="@{/jquery-dialogbox/jquery.dialogbox-1.0.js}"
+            src="../../static/jquery-dialogbox/jquery.dialogbox-1.0.js"></script>
+    <script th:src="@{/js/pintuer.js}" src="../../static/js/pintuer.js"></script>
+    <script th:src="@{/js/quit.js}" src="../../static/js/quit.js"></script>
+    <style type="text/css">
+        .body-content{
+            width: 60%;
+            margin: 20px 10px;
+            box-shadow: 3px -3px 3px #dedede, -3px 3px 3px #dedede, -3px -3px 3px #dedede;
+            background-color: #f7f7f7;
+        }
+        .option{
+            padding: 10px 40px;
+        }
+        .title{
+            color: #333;
+            width: 130px;
+        }
+        .w150{
+            width: 150px;
+            float:left;
+        }
+        /*弹框样式*/
+        .sgBtn{width: 135px; height: 35px; line-height: 35px; margin-left: 10px; margin-top: 10px; text-align: center;
+            background-color: #0095D9; color: #FFFFFF; float: left; border-radius: 5px;}
+        .rightContent{
+            width: 30%;
+            /*border: 1px #dedede solid;*/
+            margin: 20px 10px;
+            box-shadow: 3px -3px 3px #dedede, -3px 3px 3px #dedede, -3px -3px 3px #dedede;
+            background-color: #f7f7f7;
+        }
+        /*上传框样式*/
+        .uploader { position:relative; display:inline-block; overflow:hidden; cursor:default; padding:0;
+            margin:10px 0px; -moz-box-shadow:0px 0px 5px #ddd; -webkit-box-shadow:0px 0px 5px #ddd;
+            box-shadow:0px 0px 5px #ddd; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; }
+        .filename { float:left; display:inline-block; outline:0 none; height:32px; width:180px; margin:0; padding:8px 10px; overflow:hidden; cursor:default; border:1px solid; border-right:0; font:9pt/100% Arial, Helvetica, sans-serif; color:#777; text-shadow:1px 1px 0px #fff; text-overflow:ellipsis; white-space:nowrap; -moz-border-radius:5px 0px 0px 5px; -webkit-border-radius:5px 0px 0px 5px; border-radius:5px 0px 0px 5px; background:#f5f5f5; background:-moz-linear-gradient(top, #fafafa 0%, #eee 100%); background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #fafafa), color-stop(100%, #f5f5f5)); filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fafafa', endColorstr='#f5f5f5', GradientType=0);
+            border-color:#ccc; -moz-box-shadow:0px 0px 1px #fff inset; -webkit-box-shadow:0px 0px 1px #fff inset; box-shadow:0px 0px 1px #fff inset; -moz-box-sizing:border-box; -webkit-box-sizing:border-box; box-sizing:border-box; }
+        .button1 { float:left; height:32px; display:inline-block; outline:0 none; padding:8px 12px; margin:0; cursor:pointer; border:1px solid; font:bold 9pt/100% Arial, Helvetica, sans-serif; -moz-border-radius:0px 5px 5px 0px; -webkit-border-radius:0px 5px 5px 0px; border-radius:0px 5px 5px 0px; -moz-box-shadow:0px 0px 1px #fff inset; -webkit-box-shadow:0px 0px 1px #fff inset; box-shadow:0px 0px 1px #fff inset; }
+        .uploader input[type=file] { position:absolute; top:0; right:0; bottom:0; border:0; padding:0; margin:0;
+            height:30px; cursor:pointer; filter:alpha(opacity=0); -moz-opacity:0; -khtml-opacity: 0; opacity:0; }
+        .w300{width: 300px;float:left;}
+        .w150{width: 150px;float:left;}
+        .w230{width: 250px;float:left;}
+        .form-x .form-group .label {width: 170px;}
+        .form-x .form-group .field {width: calc(100% - 170px);}
+    </style>
+
+</head>
+<body>
+<div class="panel admin-panel">
+    <div class="panel-head" id="add">
+        <strong>
+            <span class="icon-pencil-square-o"></span> 印章制作
+        </strong>
+    </div>
+    <div class="padding border-bottom">
+        <ul class="search" style="padding-left:10px;">
+            <li><a class="button border-main icon-plus-square-o"
+                   href="javaScript:window.location.href = document.referrer;"> 返回</a></li>
+        </ul>
+    </div>
+    <div class="ub">
+        <div class="body-content f-s-14 c-6">
+            <form method="post" class="form-x" action="" id="seal_review_from" enctype="multipart/form-data">
+                <input type="hidden" id="startTime" name="startTime" th:value="${apply.seal_start_time}"/>
+                <input type="hidden" id="endTime" name="endTime" th:value="${apply.seal_end_time}"/>
+                <input type="hidden" id="algorithm" name="algorithm" />
+                <input type="hidden" id="applyId" name="applyId" th:value="${apply.apply_id}"/>
+                <div class="ub option">
+                    <div class="title f-w">所属单位：</div>
+                    <div class="ub-f1" th:text="${apply.unit.unit_name}"></div>
+                </div>
+                <div class="ub option">
+                    <div class="title f-w">印章名称：</div>
+                    <div class="ub-f1" th:text="${apply.seal_name}"></div>
+                </div>
+                <div class="ub option">
+                    <div class="title f-w">印章类型：</div>
+                    <div class="ub-f1" th:text="${sealType.sealTypeName}"></div>
+                </div>
+                <div class="ub option">
+                    <div class="title f-w">查看附件：</div>
+                    <div class="ub-f1" >
+                        <a th:href="@{/download/attachment(applyId=${apply.apply_id})}" >
+                            <span>点击下载</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="label">
+                        <label></label>
+                    </div>
+                    <div class="field">
+                        <button type="button" class="button bg-main icon-check-square-o"  id="submit" > 续期制作</button>
+                        &nbsp&nbsp&nbsp
+                        <button type="button" class="button bg-main icon-check-square-o" id="unlock"> 解除锁定</button>
+                        &nbsp&nbsp&nbsp
+                        <button type="button" class="button bg-main icon-check-square-o" id="reject"> 驳回</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<script  type="text/javascript" th:inline="javascript">
+    $("#unlock").click(function(){
+        let submitDate = {
+            "applyId": $("#applyId").val(),
+        };
+        $.ajax({
+            url: "/essplatform/make/unlockMake",
+            type: "post",
+            data: submitDate,
+            success: function (data) {
+                if(data == "success"){
+                    $('body').dialogbox({type:"normal",title:"系统提示", buttons:[{Text:"确认", ClickToClose:true,
+                            callback:function (dialog){
+                                window.location.href = document.referrer;
+                            }}],
+                        message:'接除锁定成功！'
+                    });
+                }else{
+                    $('body').dialogbox({type:"normal",title:"系统提示", buttons:[{Text:"确认", ClickToClose:true,
+                            callback:function (dialog){
+                                // window.history.go(-1)
+                            }
+                        }],
+                        message:'接触锁定失败！'
+                    });
+                }
+            },
+            error:function (data) {
+                $('body').dialogbox({type:"normal",title:"操作失败", buttons:[{Text:"确认", ClickToClose:true,
+                        callback:function (dialog){}
+                    }],
+                    message:'您提交的信息有误！'
+                });
+            }
+        });
+    });
+    $("#submit").click(function(){
+
+        $.ajax({
+            url: "/essplatform/make/through_renew",
+            type: "post",
+            data:  {applyId:$("#applyId").val()},
+            success: function (data) {
+                if(data == "error"){
+                    $('body').dialogbox({type:"normal",title:"制作失败", buttons:[{Text:"确认", ClickToClose:true,
+                            callback:function (dialog){
+                                // window.history.go(-1)
+                            }
+                        }],
+                        message:'操作失败，请您重试！'
+                    });
+                }else{
+                    $('body').dialogbox({type:"normal",title:"制作成功", buttons:[{Text:"确认", ClickToClose:true,
+                            callback:function (dialog){
+                                window.location.href = document.referrer;
+                            }
+                        }],
+                        message:'印章续期已完成！'
+                    });
+                }
+            },
+            error:function (data) {
+                $('body').dialogbox({type:"normal",title:"操作失败", buttons:[{Text:"确认", ClickToClose:true,
+                        callback:function (dialog){
+                        }
+                    }],
+                    message:'您提交的信息有误！'
+                });
+            }
+        });
+    });
+
+    function randomFrom() {let d = new Date();return d.getTime();}
+
+    function ClientDownload(sealId) {
+        $.ajax({
+            url: "/essplatform/download/getUKTypeCodeById",
+            type: "post",
+            data: {"id":$("#UKType").val()},
+            success: function (data) {
+                let socketIP =[[${socketIP}]];
+                let d = "{\"SEALID\":\""+sealId+"\",\"IP\":\""+socketIP+"\",\"PORT\":\"5566\",\"UKTYPE\":\""+data+"\",\"STANDARD\":\""+$("#standard").val()+"\"}";
+                alert(d);
+                $.ajax({
+                    url: "http://127.0.0.1:9990/WriteAKSealInfo",
+                    type: "post",
+                    data: {"RND": randomFrom(),"ASN1INFO":d},
+                    success: function (data) {
+                    },
+                    error:function (data) {
+                        $('body').dialogbox({type:"normal",title:"系统提示", buttons:[{Text:"确认", ClickToClose:true,
+                                callback:function (dialog){
+                                }
+                            }],
+                            message:"客户端访问异常，请重试！"
+                        });
+                    }
+                });
+            }
+        });
+    }
+    $("#reject").click(function(){
+        let txt=  "请输入驳回理由：";
+        window.wxc.xcConfirm(txt, window.wxc.xcConfirm.typeEnum.input,{
+            onOk:function(v){
+                $.ajax({
+                    url: "/essplatform/make/make_reject",
+                    type: "get",
+                    data: {"applyId": $("#applyId").val(),"message":v},
+                    success: function (data) {
+                        if(data == "success"){
+                            $('body').dialogbox({
+                                type:"normal",title:"驳回成功",
+                                buttons:[{
+                                    Text:"确认",
+                                    ClickToClose:true,
+                                    callback:function (dialog){
+                                        window.location.href = document.referrer;
+                                    }
+                                }],
+                                message:'驳回成功!'
+                            });
+                        }else{
+                            $('body').dialogbox({
+                                type:"normal",title:"驳回失败",
+                                buttons:[{
+                                    Text:"确认",
+                                    ClickToClose:true,
+                                    callback:function (dialog){
+                                        // window.history.go(-1)
+                                    }
+                                }],
+                                message:'驳回信息提交失败，请您重试！'
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en" class="no-ie" style="overflow:hidden;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="renderer" content="webkit"/>
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/pintuer.css}" href="../../static/css/pintuer.css"/>
+    <link rel="stylesheet" th:href="@{/css/page.css}" href="../../static/css/page.css">
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="../../static/css/admin.css"/>
+    <link rel="stylesheet" th:href="@{/css/common.css}" href="../../static/css/common.css"/>
+    <script th:src="@{/js/jquery-3.2.1.min.js}" src="../../static/js/jquery-3.2.1.min.js"></script>
+    <script th:src="@{/js/bootstrap.js}" src="../../static/js/bootstrap.js"></script>
+
+    <script th:src="@{/js/pintuer.js}"  src="../../static/js/pintuer.js"></script>
+    <script th:src="@{/js/quit.js}" src="../../static/js/quit.js"></script>
+</head>
+<body>
+
+<form method="post" action="" id="listform">
+    <div class="panel admin-panel">
+        <div class="panel-head"><strong class="icon-reorder">&nbsp;印章</strong>
+            <a href="" style="float:right;" th:text="${unit.unit_name}"></a>
+        </div>
+        <div class="padding border-bottom">
+            <ul class="search" style="padding-left:10px;">
+                <li><a class="button border-main icon-plus-square-o"
+                       th:href="@{'/apply/list?unitId='+${unit.unit_id}+'&pageNum=1'}"> 印章申请</a>
+                </li>
+                <li th:if=" ${reviewButton}"><a class="button border-main icon-plus-square-o"
+                                                th:href="@{'/review/list?unitId='+${unit.unit_id}+'&pageNum=1'}"> 审核印章</a>
+                </li>
+                <li th:if=" ${makeButton}"><a class="button border-main icon-plus-square-o"
+                                              th:href="@{'/make/list?unitId='+${unit.unit_id}+'&pageNum=1'}"> 制作印章</a>
+                </li>
+                <li><a class="button border-main icon-plus-square-o"
+                       th:href="@{'/seal/list?unitId='+${unit.unit_id}+'&pageNum=1'}"> 查看印章</a>
+                </li>
+                <li><a class="button border-main icon-plus-square-o"
+                       th:href="@{'/seal/write'}"> 搜索印章</a>
+                </li>
+            </ul>
+        </div>
+        <img th:src="@{/images/sealBackground.jpg}" width="100%" height="100%"/>
+<!--        <div class="panel-head"><strong class="icon-reorder">&nbsp;手写签名-部门</strong>-->
+<!--        </div>-->
+<!--        <table class="table table-hover text-center">-->
+<!--            <tr>-->
+<!--                <th width="15%">部门</th>-->
+<!--                <th width="10%">创建时间</th>-->
+<!--                <th width="25%">操作</th>-->
+<!--            </tr>-->
+<!--            <tr th:each="department,departmentStat:${departmentList}">-->
+<!--                <td th:text="${department.dep_name}">XX科</td>-->
+<!--                <td th:text="${department.input_time}">${item.depName}</td>-->
+<!--                <td>-->
+<!--                    <div class="button-group">-->
+<!--                        <a class="button border-blue"-->
+<!--                           href="${pageContext.request.contextPath}/seal/sign_list.html?depId=${item.depId}">-->
+<!--                         手签列表-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--        </table>-->
+    </div>
+</form>
+</body>
+</html>

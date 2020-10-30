@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chen.dao.UnitMapper">
+
+    <resultMap type="com.chen.entity.Unit" id="unitMap">
+        <id property="unit_id" column="unit_id"/>
+        <result property="unit_name" column="unit_name"/>
+        <result property="credit_code" column="credit_code"/>
+        <result property="area_number" column="area_number"/>
+        <result property="level" column="u_level"/>
+        <result property="parent_unit_id" column="parent_unit_id"/>
+        <result property="input_user_id" column="input_user_id"/>
+        <result property="input_time" column="input_time"/>
+        <result property="unit_name_en" column="unit_name_en"/>
+        <result property="unit_name_sn" column="unit_name_sn"/>
+        <result property="unit_province" column="unit_province"/>
+        <result property="unit_city" column="unit_city"/>
+        <result property="province_num" column="province_num"/>
+        <result property="state" column="state"/>
+        <collection property="menus" ofType="com.chen.entity.Unit" column="unit_id" select="com.chen.dao.UnitMapper.findUnitByParentUnitId"/>
+    </resultMap>
+
+    <select id="findUnitById" parameterType="java.lang.String" resultMap="unitMap">
+        SELECT * FROM unit
+        WHERE unit_id = #{unit_id}   AND state = 1
+    </select>
+
+    <select id="findUnitByParentUnitId" parameterType="java.lang.String" resultMap="unitMap">
+        SELECT * FROM unit
+        WHERE parent_unit_id = #{unit_id} AND state = 1
+    </select>
+
+    <select id="findUnitList" resultMap="unitMap">
+        SELECT * FROM unit
+        WHERE  state = 1
+    </select>
+
+    <select id="findUnitByName" parameterType="java.lang.String" resultMap="unitMap">
+        SELECT * FROM unit
+        WHERE unit_name = #{unitName} AND state = 1
+    </select>
+
+<!--    <select id="findUnitByOrgId" parameterType="java.lang.String" resultMap="unitMap">-->
+<!--        select * from unit WHERE unit_id in(SELECT unit_id FROM businesssysunitandessunit-->
+<!--                                          WHERE businesssysunitandessunit.businessSysUnitId =#{OrgID}-->
+<!--                                            AND businesssysunitandessunit.businessSysId =#{businessSysId})-->
+<!--    </select>-->
+
+<!--    <select id="findBSUnitNameById" parameterType="java.lang.String" resultType="String">-->
+<!--        SELECT businessName FROM businesssys-->
+<!--        WHERE businessSysId = #{businessSysId}-->
+<!--    </select>-->
+
+</mapper>

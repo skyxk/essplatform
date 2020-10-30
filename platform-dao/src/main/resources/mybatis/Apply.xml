@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chen.dao.ApplyMapper">
+    <resultMap type="com.chen.entity.Apply" id="applyMap">
+        <id property="apply_id" column="apply_id"/>
+        <result property="apply_type" column="apply_type"/>
+        <result property="seal_id" column="seal_id"/>
+        <result property="seal_name" column="seal_name"/>
+        <result property="img_id" column="img_id"/>
+        <result property="cert_id" column="cert_id"/>
+        <result property="unit_id" column="unit_id"/>
+        <result property="seal_type_id" column="seal_type_id"/>
+        <result property="seal_standard" column="seal_standard"/>
+        <result property="is_uk" column="is_uk"/>
+        <result property="device_code" column="device_code"/>
+        <result property="seal_person_id" column="seal_person_id"/>
+        <result property="seal_start_time" column="seal_start_time"/>
+        <result property="seal_end_time" column="seal_end_time"/>
+        <result property="app_sym_key_enc" column="app_sym_key_enc"/>
+        <result property="data_sym_key_enc" column="data_sym_key_enc"/>
+        <result property="enc_file" column="enc_file"/>
+        <result property="usb_key_info" column="usb_key_info"/>
+        <result property="task_id" column="task_id"/>
+        <result property="jbr_card_data" column="jbr_card_data"/>
+        <result property="jbr_card_type" column="jbr_card_type"/>
+        <result property="jbr_card_name" column="jbr_card_name"/>
+        <result property="uk_id" column="uk_id"/>
+        <result property="file_type" column="file_type"/>
+        <result property="apply_state" column="apply_state"/>
+        <result property="apply_user_id" column="apply_user_id"/>
+        <result property="apply_time" column="apply_time"/>
+        <result property="review_user_id" column="review_user_id"/>
+        <result property="review_time" column="review_time"/>
+        <result property="make_user_id" column="make_user_id"/>
+        <result property="make_time" column="make_time"/>
+        <result property="seal_code" column="seal_code"/>
+        <result property="temp_file" column="temp_file"/>
+        <result property="uk_type" column="uk_type"/>
+        <association property="certificate" column="cert_id" select="com.chen.dao.CertificateMapper.findCertificateById"
+                     javaType="com.chen.entity.Certificate"/>
+
+        <association property="unit" column="unit_id" select="com.chen.dao.UnitMapper.findUnitById" javaType="com.chen.entity.Unit"/>
+
+        <association property="apply_user" column="apply_user_id" select="com.chen.dao.UserMapper.findUserById"
+                     javaType="com.chen.entity.User"/>
+
+        <association property="review_user" column="review_user_id" select="com.chen.dao.UserMapper.findUserById"
+                     javaType="com.chen.entity.User"/>
+
+        <association property="make_user" column="make_user_id" select="com.chen.dao.UserMapper.findUserById"
+                     javaType="com.chen.entity.User"/>
+    </resultMap>
+
+    <select id="findApplyById" resultMap="applyMap">
+    SELECT * FROM apply where apply_id  = #{applyId}
+    </select>
+
+    <delete id="delApplyById"  parameterType="String">
+        DELETE FROM apply where apply_id = #{applyId}
+    </delete>
+    <select id="findApplyList" resultMap="applyMap">
+        SELECT * FROM apply
+        <where>
+            <if test="apply_id!=null">
+                apply_id = #{apply_id}
+            </if>
+            <if test="apply_type!=null">
+                AND apply_type = #{apply_type}
+            </if>
+            <if test="seal_id != null">
+                AND seal_id = #{seal_id}
+            </if>
+            <if test="seal_code != null">
+                AND seal_code = #{seal_code}
+            </if>
+            <if test="seal_name != null">
+                AND seal_name = #{seal_name}
+            </if>
+            <if test="img_id != null">
+                AND img_id = #{img_id}
+            </if>
+            <if test="cert_id != null">
+                AND cert_id = #{cert_id}
+            </if>
+            <if test="unit_id != null">
+                AND unit_id = #{unit_id}
+            </if>
+            <if test="seal_type_id != null">
+                AND seal_type_id = #{seal_type_id}
+            </if>
+            <if test="seal_standard != null">
+                AND seal_standard = #{seal_standard}
+            </if>
+            <if test="is_uk != 0">
+                AND is_uk = #{is_uk}
+            </if>
+            <if test="seal_start_time != null">
+                AND seal_start_time = #{seal_start_time}
+            </if>
+            <if test="seal_end_time != null">
+                AND seal_end_time = #{seal_end_time}
+            </if>
+            <if test="task_id != null">
+                AND task_id = #{task_id}
+            </if>
+            <if test="jbr_card_name != null">
+                AND jbr_card_name = #{jbr_card_name}
+            </if>
+            <if test="uk_id != null">
+                AND uk_id = #{uk_id}
+            </if>
+            <if test="file_type !=null">
+                AND file_type = #{file_type}
+            </if>
+            <if test="apply_state != 0">
+                AND apply_state = #{apply_state}
+            </if>
+            <if test="apply_user_id != null">
+                AND apply_user_id = #{apply_user_id}
+            </if>
+            <if test="apply_time != null">
+                AND apply_time = #{apply_time}
+            </if>
+            <if test="review_user_id != null">
+                AND review_user_id = #{review_user_id}
+            </if>
+            <if test="review_time != null">
+                AND review_time = #{review_time}
+            </if>
+            <if test="make_user_id != null">
+                AND make_user_id = #{make_user_id}
+            </if>
+            <if test="make_time != null">
+                AND make_time = #{make_time}
+            </if>
+        </where>
+        ORDER BY apply_time DESC
+    </select>
+
+
+    <insert id="addApply"  parameterType="com.chen.entity.Apply">
+        INSERT INTO apply(
+            apply_id,apply_type,seal_id,seal_name,img_id,cert_id,unit_id,seal_type_id,seal_standard,is_uk,device_code,
+            seal_person_id,seal_start_time,seal_end_time,app_sym_key_enc,data_sym_key_enc,enc_file,usb_key_info,task_id,
+            jbr_card_data,jbr_card_type,jbr_card_name,uk_id,file_type,apply_state,apply_user_id,apply_time,
+            review_user_id,review_time,make_user_id,make_time,seal_code,temp_file,uk_type)
+        VALUES(
+            #{apply_id},#{apply_type},#{seal_id},#{seal_name},#{img_id},#{cert_id},#{unit_id},#{seal_type_id},
+            #{seal_standard},#{is_uk},#{device_code},#{seal_person_id},#{seal_start_time},#{seal_end_time},
+            #{app_sym_key_enc},#{data_sym_key_enc},#{enc_file},#{usb_key_info},#{task_id},#{jbr_card_data},
+            #{jbr_card_type},#{jbr_card_name},#{uk_id},#{file_type},#{apply_state},
+            #{apply_user_id},#{apply_time},#{review_user_id},#{review_time},#{make_user_id},#{make_time},#{seal_code},
+            #{temp_file},#{uk_type}
+        )
+    </insert>
+
+    <update id="updateApply">
+        UPDATE apply
+        <set>
+            <if test="apply_type!=null">
+                apply_type = #{apply_type},
+            </if>
+            <if test="seal_id != null">
+                seal_id = #{seal_id},
+            </if>
+            <if test="seal_name != null">
+                seal_name = #{seal_name},
+            </if>
+            <if test="img_id != null">
+                img_id = #{img_id},
+            </if>
+            <if test="cert_id != null">
+                cert_id = #{cert_id},
+            </if>
+            <if test="unit_id != null">
+                unit_id = #{unit_id},
+            </if>
+            <if test="seal_type_id != null">
+                seal_type_id = #{seal_type_id},
+            </if>
+            <if test="seal_standard != null">
+                seal_standard = #{seal_standard},
+            </if>
+            <if test="is_uk != 0">
+                is_uk = #{is_uk},
+            </if>
+            <if test="device_code != null">
+                device_code = #{device_code},
+            </if>
+
+            <if test="seal_start_time != null">
+                seal_start_time = #{seal_start_time},
+            </if>
+            <if test="seal_end_time != null">
+                seal_end_time = #{seal_end_time},
+            </if>
+            <if test="app_sym_key_enc != null">
+                app_sym_key_enc = #{app_sym_key_enc},
+            </if>
+            <if test="app_sym_key_enc != null">
+                device_code = #{device_code},
+            </if>
+            <if test="data_sym_key_enc != null">
+                data_sym_key_enc = #{data_sym_key_enc},
+            </if>
+            <if test="enc_file != null">
+                enc_file = #{enc_file},
+            </if>
+            <if test="usb_key_info != null">
+                usb_key_info = #{usb_key_info},
+            </if>
+
+            <if test="task_id != null">
+                task_id = #{task_id},
+            </if>
+            <if test="jbr_card_data != null">
+                jbr_card_data = #{jbr_card_data},
+            </if>
+            <if test="jbr_card_type != null">
+                jbr_card_type = #{jbr_card_type},
+            </if>
+
+            <if test="jbr_card_name != null">
+                jbr_card_name = #{jbr_card_name},
+            </if>
+            <if test="uk_id != null">
+                uk_id = #{uk_id},
+            </if>
+            <if test="file_type !=null">
+                file_type = #{file_type},
+            </if>
+            <if test="apply_state != 0">
+                apply_state = #{apply_state},
+            </if>
+            <if test="apply_user_id != null">
+                apply_user_id = #{apply_user_id},
+            </if>
+            <if test="apply_time != null">
+                apply_time = #{apply_time},
+            </if>
+            <if test="review_user_id != null">
+                review_user_id = #{review_user_id},
+            </if>
+            <if test="review_time != null">
+                review_time = #{review_time},
+            </if>
+            <if test="make_user_id != null">
+                make_user_id = #{make_user_id},
+            </if>
+            <if test="make_time != null">
+                make_time = #{make_time},
+            </if>
+            <if test="seal_code != null">
+                seal_code = #{seal_code},
+            </if>
+            <if test="temp_file != null">
+                temp_file = #{temp_file}
+            </if>
+        </set>
+        where apply_id = #{apply_id}
+    </update>
+    <select id="findApplyListByUKId" resultMap="applyMap" >
+        SELECT * FROM apply where uk_id = #{ukid} ORDER BY apply_time DESC
+    </select>
+
+    <select id="findApplyListByKeyword" resultMap="applyMap">
+        SELECT * FROM apply a
+        <where>
+            <if test="apply.apply_state!=null">
+                AND  a.apply_state = #{apply.apply_state}
+            </if>
+            <if test="apply.unit_id!=null">
+                AND  a.unit_id = #{apply.unit_id}
+            </if>
+            <if test="apply.apply_user_id!=null">
+                AND  a.apply_user_id = #{apply.apply_user_id}
+            </if>
+            AND concat(a.seal_name,a.jbr_card_name,a.jbr_card_data) like CONCAT('%',#{keyword},'%')
+        </where>
+        ORDER BY a.apply_time DESC
+    </select>
+
+</mapper>

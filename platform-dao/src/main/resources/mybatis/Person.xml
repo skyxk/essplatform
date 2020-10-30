@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chen.dao.PersonMapper">
+
+    <resultMap type="com.chen.entity.Person" id="personMap">
+        <id property="person_id" column="person_id"/>
+        <result property="person_name" column="person_name"/>
+        <result property="name_ap" column="name_ap"/>
+        <result property="id_num" column="id_num"/>
+        <result property="img_base64" column="img_base64"/>
+        <result property="sex" column="sex"/>
+        <result property="state" column="state"/>
+        <result property="provincial_user_id" column="provincial_user_id"/>
+        <result property="cert_id" column="cert_id"/>
+        <result property="emp_num" column="emp_num"/>
+    </resultMap>
+
+    <select id="findPersonById" resultMap="personMap">
+        SELECT * FROM person
+        WHERE
+        person_id = #{personId}
+    </select>
+
+    <select id="findPersonListByKeyword" resultMap="personMap">
+        SELECT * FROM person
+        WHERE
+        state = 1 and
+        concat(name_ap,id_num,person_name) like CONCAT('%',#{keyword},'%')
+    </select>
+
+
+    <select id="findPersonByProvincialUserId" resultMap="personMap">
+        SELECT * FROM person
+        WHERE
+         provincial_user_id = #{provincialUserId}
+    </select>
+    <select id="findPersonByIdNum" resultMap="personMap">
+        SELECT * FROM person
+        WHERE
+         id_num = #{idNum}
+    </select>
+</mapper>

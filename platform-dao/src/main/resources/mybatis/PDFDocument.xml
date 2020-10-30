@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chen.dao.PDFDocumentMapper">
+
+    <resultMap type="com.chen.entity.pdf.PDFDocument" id="PDFDocumentMap">
+        <id property="documentCode" column="documentCode"/>
+        <result property="documentName" column="documentName"/>
+
+    </resultMap>
+    <insert id="addPDFDocument" parameterType="com.chen.entity.pdf.PDFDocument">
+         insert into pdf_document
+         (documentCode,documentName)
+          values
+          (#{documentCode},#{documentName})
+    </insert>
+    <select id="findPDFDocumentByCode" parameterType="java.lang.String" resultMap="PDFDocumentMap">
+        SELECT * FROM pdf_document
+        WHERE documentCode = #{documentCode}
+    </select>
+</mapper>

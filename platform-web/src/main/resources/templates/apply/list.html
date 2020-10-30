@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en" class="no-ie" style="overflow:hidden;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="renderer" content="webkit"/>
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/pintuer.css}" href="../../static/css/pintuer.css"/>
+    <link rel="stylesheet" th:href="@{/css/page.css}" href="../../static/css/page.css">
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="../../static/css/admin.css"/>
+    <link rel="stylesheet" th:href="@{/css/common.css}" href="../../static/css/common.css"/>
+    <script th:src="@{/js/jquery-3.2.1.min.js}" src="../../static/js/jquery-3.2.1.min.js"></script>
+    <script th:src="@{/js/bootstrap.js}" src="../../static/js/bootstrap.js"></script>
+    <!--    弹框插件-->
+    <link rel="stylesheet" th:href="@{/jquery-dialogbox/jquery.dialogbox-1.0.css}"
+          href="../../static/jquery-dialogbox/jquery.dialogbox-1.0.css"/>
+    <script th:src="@{/jquery-dialogbox/jquery.dialogbox-1.0.js}"
+            src="../../static/jquery-dialogbox/jquery.dialogbox-1.0.js"></script>
+
+    <script th:src="@{/js/pintuer.js}" src="../../static/js/pintuer.js"></script>
+    <script th:src="@{/js/quit.js}" src="../../static/js/quit.js"></script>
+</head>
+<body>
+    <form method="post" action="" id="listform">
+        <div class="panel admin-panel">
+            <div class="panel-head"><strong class="icon-reorder">申请列表-申请</strong>
+                <a href="" style="float:right;" th:text="${unit.unit_name}">XXX烟草专卖局</a>
+            </div>
+            <div class="padding border-bottom">
+                <ul class="search" style="padding-left:10px;">
+                    <li><a class="button border-main icon-plus-square-o"
+                           th:href="@{/unit/page(openUnitId=${unit.unit_id})}">返回</a>
+                    </li>
+                    <li><a class="button border-main icon-plus-square-o"
+                           th:href="@{/apply/add(unitId=${unit.unit_id})}">添加申请</a>
+                    </li>
+                    <li>
+                        <input type="text" placeholder="输入印章名称或经办人姓名" id="keywords" class="input" style="width: 200px;"/>
+                    </li>
+                    <li>
+                        <button type="button" class="button icon-search" style="width: 100px;" onclick="selectApply()">查找</button>
+                    </li>
+                </ul>
+            </div>
+
+            <table class="table table-hover text-center">
+                <tr>
+                    <th width="10%">印章名称</th>
+                    <th width="10%">申请类型</th>
+                    <th width="10%">申请人</th>
+                    <th width="10%">申请时间</th>
+                    <th width="10%">状态</th>
+                    <th width="10%">操作</th>
+                </tr>
+                <tr th:each="apply,applyStat:${pageBean.list}"  th:id="${apply.apply_id}">
+                    <td th:text="${apply.seal_name}">XXX省烟草专卖局章</td>
+                    <td th:switch="${apply.apply_type}">
+                        <span th:case="'1'">申请新印章</span>
+                        <span th:case="'2'">UK注册</span>
+                        <span th:case="'3'">授权延期</span>
+                        <span th:case="'4'">证书延期</span>
+                        <span th:case="'5'">印章重做</span>
+                        <span th:case="'6'">申请新印章</span>
+                        <span th:case="*">未知</span>
+                    </td>
+                    <td th:text="${apply.apply_user.person.person_name}">单位信息</td>
+                    <td th:text="${apply.apply_time}">2020/1/7 11:22:33</td>
+                    <td th:switch="${apply.apply_state}">
+                        <span th:case="'1'">未审核</span>
+                        <span th:case="'2'">已审核</span>
+                        <span th:case="'10'">审核人驳回</span>
+                        <span th:case="'4'">制作人驳回</span>
+                        <span th:case="*">未知</span>
+                    </td>
+                    <td>
+                        <div class="button-group">
+                            <a class="button border-red" th:href="'javascript:sealApplyDelete('+'\''+ ${apply.apply_id}+'\''+')'">
+                                <span ></span> 撤销申请</a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+    <div class="page-icon">
+
+    <span class="page-next">
+            共<span th:text="${pageBean.totalRecord}">10</span>记录
+    </span>
+        <a class="page-next" href="javascript:pageLast('4');">首页</a>
+        <a class="page-last" href="javascript:pageLast('1');">上一页</a>
+        <span class="page-next" >
+            当前第<span th:text="${pageBean.pageNum}">1</span>页
+    </span>
+        <a class="page-next" href="javascript:pageLast('2');">下一页</a>
+        <a class="page-next" href="javascript:pageLast('3');">末页</a>
+        <span class="page-next">
+            共<span th:text="${pageBean.totalPage}">10</span>页
+    </span>
+
+    </div>
+</body>
+
+<script  type="text/javascript" th:inline="javascript">
+
+    function selectApply() {
+        let keywords =  $('#keywords').val();
+        window.location.href = "/essplatform/apply/selectApplyByName?keyword="+encodeURIComponent(keywords)+
+            "&unitId="+[[${unit.unit_id}]]+"&pageNum=1";
+    }
+    function pageLast(type) {
+        let pageNum = [[${pageBean.pageNum}]];
+        let start = 1;
+        let end = [[${pageBean.totalPage}]];
+        if (type=="1"){
+            pageNum = pageNum-1;
+        }else if(type=="2"){
+            pageNum = pageNum+1;
+        }else if(type=="3"){
+            pageNum = end;
+        }else if(type=="4"){
+            pageNum = start;
+        }
+        if (pageNum<start){
+            $('body').dialogbox({
+                type:"normal",title:"系统提示",
+                buttons:[{
+                    Text:"确认",
+                    ClickToClose:true,
+                    callback:function (dialog){}
+                }],
+                message:"当前已经是第一页"
+            });
+        }
+        if (pageNum>end){
+            $('body').dialogbox({
+                type:"normal",title:"系统提示",
+                buttons:[{
+                    Text:"确认",
+                    ClickToClose:true,
+                    callback:function (dialog){}
+                }],
+                message:"当前已经是最后一页"
+            });
+        }
+        if (start<=pageNum&&pageNum<=end){
+            window.location.href = "/essplatform/apply/list?unitId="+[[${unit.unit_id}]]+"&pageNum="+pageNum;
+        }
+    }
+    function sealApplyDelete(applyId) {
+        $('body').dialogbox({
+            type:"normal",title:"确认撤销",
+            buttons:[{
+                Text:"确认",
+                ClickToClose:true,
+                callback:function (dialog){
+                    $.ajax({
+                        url: "/essplatform/apply/delete",
+                        type: "get",
+                        data: {"applyId":applyId},
+                        success: function (data) {
+                            if (data=="success"){
+                                var id = "#"+applyId;
+                                $(id).remove();
+                            }else{
+                                alert(data);
+                            }
+                        },
+                        error: function (data) {
+                            alert("操作失败");
+                        }
+                    });
+                }
+            },
+            {
+                Text:"取消",
+                ClickToClose:true,
+                callback:function (dialog){
+
+                }
+            }],
+            message:"撤销的申请信息将被删除！"
+        });
+    }
+</script>
+</html>

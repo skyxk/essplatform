@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en" class="no-ie" style="overflow:hidden;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="renderer" content="webkit"/>
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/pintuer.css}" href="../../static/css/pintuer.css"/>
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="../../static/css/admin.css"/>
+    <link rel="stylesheet" th:href="@{/css/common.css}" href="../../static/css/common.css"/>
+    <script th:src="@{/js/jquery-3.2.1.min.js}" src="../../static/js/jquery-3.2.1.min.js"></script>
+    <script th:src="@{/js/bootstrap.js}" src="../../static/js/bootstrap.js"></script>
+    <!--    弹框插件-->
+    <link rel="stylesheet" th:href="@{/jquery-dialogbox/jquery.dialogbox-1.0.css}"
+          href="../../static/jquery-dialogbox/jquery.dialogbox-1.0.css"/>
+    <script th:src="@{/jquery-dialogbox/jquery.dialogbox-1.0.js}"
+            src="../../static/jquery-dialogbox/jquery.dialogbox-1.0.js"></script>
+    <script th:src="@{/js/pintuer.js}" src="../../static/js/pintuer.js"></script>
+    <script th:src="@{/js/quit.js}" src="../../static/js/quit.js"></script>
+    <style type="text/css">
+        /*上传框样式*/
+        .uploader { position:relative; display:inline-block; overflow:hidden; cursor:default; padding:0;
+            margin:10px 0px; -moz-box-shadow:0px 0px 5px #ddd; -webkit-box-shadow:0px 0px 5px #ddd;
+            box-shadow:0px 0px 5px #ddd; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; }
+        .filename { float:left; display:inline-block; outline:0 none; height:32px; width:180px; margin:0; padding:8px 10px; overflow:hidden; cursor:default; border:1px solid; border-right:0; font:9pt/100% Arial, Helvetica, sans-serif; color:#777; text-shadow:1px 1px 0px #fff; text-overflow:ellipsis; white-space:nowrap; -moz-border-radius:5px 0px 0px 5px; -webkit-border-radius:5px 0px 0px 5px; border-radius:5px 0px 0px 5px; background:#f5f5f5; background:-moz-linear-gradient(top, #fafafa 0%, #eee 100%); background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #fafafa), color-stop(100%, #f5f5f5)); filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fafafa', endColorstr='#f5f5f5', GradientType=0);
+            border-color:#ccc; -moz-box-shadow:0px 0px 1px #fff inset; -webkit-box-shadow:0px 0px 1px #fff inset; box-shadow:0px 0px 1px #fff inset; -moz-box-sizing:border-box; -webkit-box-sizing:border-box; box-sizing:border-box; }
+        .button1 { float:left; height:32px; display:inline-block; outline:0 none; padding:8px 12px; margin:0; cursor:pointer; border:1px solid; font:bold 9pt/100% Arial, Helvetica, sans-serif; -moz-border-radius:0px 5px 5px 0px; -webkit-border-radius:0px 5px 5px 0px; border-radius:0px 5px 5px 0px; -moz-box-shadow:0px 0px 1px #fff inset; -webkit-box-shadow:0px 0px 1px #fff inset; box-shadow:0px 0px 1px #fff inset; }
+        .uploader input[type=file] { position:absolute; top:0; right:0; bottom:0; border:0; padding:0; margin:0;
+            height:30px; cursor:pointer; filter:alpha(opacity=0); -moz-opacity:0; -khtml-opacity: 0; opacity:0; }
+        .w300{width: 300px;float:left;}
+        .w150{width: 150px;float:left;}
+        .w230{width: 250px;float:left;}
+        .form-x .form-group .label {width: 170px;}
+        .form-x .form-group .field {width: calc(100% - 170px);}
+    </style>
+</head>
+<body>
+    <div class="panel admin-panel">
+        <div class="panel-head"><strong class="icon-reorder"> 印章申请</strong>
+            <a href="" style="float:right;" th:text="${unit.unit_name}"></a>
+        </div>
+        <div class="padding border-bottom form-x" >
+            <ul class="search" style="padding-left:10px;">
+                <li><a class="button border-main icon-plus-square-o" href="javaScript:window.location.href = document.referrer;"> 返回</a></li>
+            </ul>
+        </div>
+        <form method="post" class="form-x" id="applyInfo_from" >
+            <input type="hidden" id="applyType" name="applyType" th:value="${applyType}"/>
+            <input type="hidden" id="unitId" name="unitId" th:value="${unit.unit_id}"/>
+            <input type="hidden" id="algorithm" name="algorithm" />
+
+            <input type="hidden" id="UKID" name="UKID" />
+            <input type="hidden" id="cert" name="cert" />
+            <input type="hidden" id="gifData" name="gifData" />
+            <input type="hidden" id="ASN1" name="ASN1" />
+            <input type="hidden" id="imgW" name="imgW" />
+            <input type="hidden" id="imgH" name="imgH" />
+            <input type="hidden" id="startTime" name="startTime" />
+            <input type="hidden" id="endTime" name="endTime" />
+
+            <div class="body-content">
+                <ul class="search">
+                    <li class="form-group">
+                        <div class="label">
+                            <label> 印章标准：</label>
+                        </div>
+                        <div class="field">
+                            <select id="standard" name="standard"  class=" input w300">
+                                <option value="">请选择印章标准</option>
+                                <div th:each="standard,standardStat:${standards}">
+                                    <option th:value="${standard.id}"
+                                            th:text="${standard.standard_name}">自定义标准
+                                    </option>
+                                </div>
+                            </select>
+                            <span style="color: #ff0000">&nbsp&nbsp&nbsp*</span>
+                        </div>
+                    </li>
+                    <li class="form-group">
+                        <div class="label">
+                            <label> UK型号：</label>
+                        </div>
+                        <div class="field">
+                            <select  id="UKType" name="UKType" class="input w300">
+                            </select>
+                            <span style="color: #ff0000">&nbsp&nbsp&nbsp*</span>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="search" >
+                    <li class="form-group">
+                        <div class="label">
+                            <label>经办人姓名：</label>
+                        </div>
+                        <div class="field">
+                            <input type="text"  class="input w300" id="jbr_name" name="jbr_name" value="" />
+                            <span style="color: #ff0000">&nbsp&nbsp&nbsp*</span>
+                        </div>
+
+                    </li>
+                    <li class="form-group">
+                        <div class="label">
+                            <label>经办人信息：</label>
+                        </div>
+                        <div class="field">
+                            <input type="text"  class="input w300" id="jbr_number" name="jbr_number" value="" />
+                            <span style="color: #ff0000">&nbsp&nbsp&nbsp*</span>
+                            <span >（带 * 号的为必填项）</span>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="search" >
+                    <li class="form-group">
+                        <div class="label">
+                            <label>印章申请材料：</label>
+                        </div>
+                        <div class="field">
+                            <div class="uploader white">
+                                <input type="text" id="file_name" value="多个文件请压缩后上传" class="filename input w230" readonly/>
+                                <input type="button" class="button1" value="添加文件"/>
+                                <input type="file" id="upload_file"  name="upload_file"/>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="search" >
+                    <li class="form-group">
+                        <div class="label">
+                            <label></label>
+                        </div>
+                        <div class="field">
+                            <button type="button" class="button bg-main icon-check-square-o w150" id="readUK">读取UK</button>
+                            <button type="button" class="button bg-main icon-check-square-o w150" style="display: none" id="submitButton"> 提交申请</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </form>
+    </div>
+</body>
+<script  type="text/javascript" th:inline="javascript">
+    $("#upload_file").change(function(){
+        var fl=this.files.length;
+        for(var i=0;i<fl;i++){
+            var file = this.files[i];
+            //上传文件格式
+            var imgFileType = file.name.toLowerCase().split('.').splice(-1);
+            if((file.size/1048576)<6){
+                if("rar" == imgFileType||"zip" == imgFileType||"7z" == imgFileType){
+                }else{
+                    alert("文件格式错误，请重新上传");
+                    $("#upload_file").val("");
+                }
+            }else{
+                alert("请上传小于5兆的文件！");
+                $("#upload_file").val("");
+            }
+        }
+    });
+
+    var jsonObj = [];
+
+    $("#standard").change(function(){
+        if($("#standard").val()=="4"||$("#standard").val()=="5"||$("#standard").val()=="6"){
+            $("#algorithm").val(1);
+        }else{
+            $("#algorithm").val(2);
+        }
+    });
+    $("#standard").change(function(){
+        document.getElementById("UKType").options.length=0;
+        if($("#standard").val()=="1"||$("#standard").val()=="2"||$("#standard").val()=="4"){
+            //当选择UK印章的时候
+            let submitDate = {
+                "sealStandard": $("#standard").val(),
+            };
+            $.ajax({url: "/essplatform/make/getUKType", type: "post", data: submitDate,
+                success: function (data) {
+                    //返回成功后，添加select
+                    let obj = eval('('+ data +')');
+                    for(let i = 0; i < obj.length;i++){//循环遍历数据
+                        let ukType = obj[i];
+                        document.getElementById("UKType").options.add(new Option(ukType.type_name,ukType.id));
+                    }
+                },
+                error:function (data) {
+                    $('body').dialogbox({type:"normal",title:"操作失败", buttons:[{Text:"确认",
+                            ClickToClose:true, callback:function (dialog){}}],
+                        message:'您提交的信息有误！'
+                    });
+                }
+            });
+        }else{
+            document.getElementById("UKType").options.length=0;
+        }
+    });
+    $("#readUK").click(function () {
+        $.ajax({
+            url: "/essplatform/download/getUKTypeCodeById",
+            type: "post",
+            data: {"id":$("#UKType").val()},
+            success: function (data) {
+                let data1 = "{\"UKTYPE\":\""+data+"\",\"STANDARD\":\""+$("#standard").val()+"\"}";
+                //读取UK
+                $.ajax({
+                    url: "http://127.0.0.1:9990/RegisterUKSeal",
+                    type: "post",
+                    data: {"RND": randomFrom(),"SEALINFO":data1},
+                    success: function (data) {
+                        if (data.indexOf("ERROR") != -1) {
+                            let obj = eval('('+ data +')');
+                            $('body').dialogbox({type:"normal",title:"系统提示", buttons:[{Text:"确认", ClickToClose:true,
+                                    callback:function (dialog){
+                                    }
+                                }],
+                                message:obj.ERROR
+                            });
+                        } else {
+                            let obj = eval('('+ data +')');
+                            let seal_length = obj.length;
+                            for (let i=0;i<seal_length;i++) {
+                                if (obj[i].ERROER==null){
+                                    jsonObj[i]=obj[i];
+                                    $("#readUK").hide();
+                                    $("#submitButton").show();
+                                }
+                            }
+                        }
+                    },
+                    error:function (data) {}
+                });
+            }
+        });
+    });
+    function randomFrom() {let d = new Date();return d.getTime();}
+    $("#submitButton").click(function () {
+        if (isNull($('#jbr_name').val())){
+            alert("经办人不可为空");
+            return;
+        }
+        let filePath ;
+        if ($('#upload_file')[0].files[0]!=null){
+            var fileObj = document.getElementById('upload_file').files[0]; //获取file对象
+            var FileController = getPath() + "/upload";//此处填写servlet路径
+            var form = new FormData();
+            form.append("upload_file", fileObj);
+            var xhr = new XMLHttpRequest();
+            xhr.open("post", FileController, false);
+            xhr.onload = function () {
+                filePath = xhr.responseText;
+                if(xhr.responseText == "error"){
+                    alert("文件上传错误，请重试！");
+                    return;
+                }
+            };
+            xhr.send(form);
+        }
+        // if(!checkIDCard($('#jbr_number').val())){
+        //     alert("身份证号码有误");
+        //     return;
+        // }
+        let formData = new FormData();
+        formData.append('applyType', $('#applyType').val());
+        formData.append('upload_file', filePath);
+        formData.append('jbr_name', $('#jbr_name').val());
+        formData.append('jbr_number', $('#jbr_number').val());
+        formData.append('unitId', $('#unitId').val());
+        formData.append('DATA', JSON.stringify(jsonObj));
+        formData.append('standard', $("#standard").val());
+        $.ajax({
+            type: "post",
+            url: "/essplatform/register/add_do",
+            processData: false, // 不处理数据
+            contentType: false, // 不设置内容类型
+            data: formData,
+            success: function (data) {
+                let obj = eval('('+ data +')');
+                let code = obj.code;
+                let msg = obj.msg;
+                $('body').dialogbox({
+                    type:"normal",title:"系统提示",
+                    buttons:[{
+                        Text:"确认",
+                        ClickToClose:true,
+                        callback:function (dialog){
+                            window.location.href = "/essplatform/register/list?";
+                        }
+                    }],
+                    message:msg
+                });
+            }
+        });
+    });
+    // 获取项目的相对地址
+    function getPath() {
+        var pathName = window.location.pathname.substring(1);
+        var webName = pathName == '' ? '' : pathName.substring(0,
+            pathName.indexOf('/'));
+        if (webName == "") {
+            return window.location.protocol + '//'
+                + window.location.host;
+        } else {
+            return window.location.protocol + '//'
+                + window.location.host + '/' + webName;
+        }
+    }
+</script>
+
+</html>

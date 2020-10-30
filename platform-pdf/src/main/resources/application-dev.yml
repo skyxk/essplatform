@@ -1,0 +1,70 @@
+server:
+  port: 8080
+#  servlet:
+#    context-path: /essplatformpdf
+  context-path: /essplatformpdf
+
+mybatis:
+  #mybatis的xml文件配置 没有此项配置则为注解模式
+  mapper-locations: classpath:mybatis/*.xml
+  type-aliases-package: com.chen.entity
+
+spring:
+  #数据源配置
+  datasource:
+#    username: CLTESS
+#    password: CLTESS1234
+#    url: jdbc:mysql://localhost:3306/essplatform_sxzj?useSSL=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&amp
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://123.56.11.240:3306/essplatform_sxzj?useSSL=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&amp
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  aop:
+    proxy-target-class: true
+    auto: true
+  thymeleaf:
+    cache: false
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${myConfig.pdfPath}
+#  devtools:
+#    restart:
+#      #需要实时更新的目录
+#      additional-paths: resources/**,static/**,templates/**
+
+
+  #   spring 2.1写法   #
+#  servlet:
+#    multipart:
+#      max-file-size: 1024MB
+#      max-request-size: 1024MB
+#  spring 1.5写法    #
+  http:
+    multipart:
+      max-file-size: 1024MB
+      max-request-size: 1024MB
+# slf4j日志配置
+#logging:
+logging:
+  # 配置级别
+  level:
+    com.chen.dao.SealMapper: debug
+    #分包配置级别，即不同的目录下可以使用不同的级别
+    root: info
+  # 指定输出日志的文件名，默认输出至当前项目目录下
+#  file: D:/essplatform.log
+
+#    thymeleaf:
+#      cache: false
+#      prefix: classpath:/templates/
+#      suffix: .html
+#      encoding: UTF-8
+#      content-type: text/html
+#      mode: HTML5
+
+myConfig:
+  pdfPath: D:/pdf/
+  hostURL: http://123.207.220.137:8080
+  socketIP: 123.207.220.137
+  #使用的加密方式：1加密机，0token
+  securityType: 0

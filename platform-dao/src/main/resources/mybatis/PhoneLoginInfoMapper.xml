@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chen.dao.PhoneLoginInfoMapper">
+
+<!--	<resultMap type="com.chen.entity.PhoneLoginInfo" id="loginMap">-->
+<!--		<id property="personId" column="personId"/>-->
+<!--		<result property="account_num" column="account_num"/>-->
+<!--		<result property="psw" column="psw"/>-->
+<!--		<result property="random" column="random"/>-->
+<!--	</resultMap>-->
+	<!-- 根据手机号和密码查询  2018.05.22 -->
+	<select id="findByPersonId" resultType="com.chen.entity.PhoneLoginInfo" parameterType="java.lang.String">
+		select * from phonelogininfo where personId = #{0}
+	</select>
+	<!-- 根据手机号和密码查询  2018.05.22 -->
+	<select id="queryByPhoneAndPsw" resultType="com.chen.entity.PhoneLoginInfo" parameterType="java.lang.String">
+		select * from phonelogininfo where phone = #{0} and psw = #{1}
+	</select>
+	
+	<!-- 添加手机号密码登录信息对象 2018.05.24 -->
+<!--	<insert id="addPhoneLoginInfo" parameterType="com.chen.entity.PhoneLoginInfo">-->
+<!--		insert into phonelogininfo(personId,phone,psw) -->
+<!--		value(#{personId,jdbcType=VARCHAR},-->
+<!--		#{phone,jdbcType=VARCHAR},#{psw,jdbcType=VARCHAR})-->
+<!--	</insert>-->
+
+	<update id="updatePhoneLoginRandom" parameterType="com.chen.entity.PhoneLoginInfo" >
+		update phonelogininfo
+		<set >
+			<if test="random != null" >
+				random = #{random,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where personId = #{personId,jdbcType=VARCHAR}
+	</update>
+
+	<!-- 根据随机数查询  2018.07.14 -->
+	<select id="queryByRandom" resultType="com.chen.entity.PhoneLoginInfo" parameterType="java.lang.String">
+		select * from phonelogininfo where random = #{0}
+	</select>
+	
+</mapper>

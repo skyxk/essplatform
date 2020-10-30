@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chen.dao.SealMapper">
+
+    <resultMap type="com.chen.entity.Seal" id="sealMap">
+        <id property="seal_id" column="seal_id"/>
+        <result property="seal_code" column="seal_code"/>
+        <result property="seal_name" column="seal_name"/>
+        <result property="seal_img_id" column="seal_img_id"/>
+        <result property="seal_cert_id" column="seal_cert_id"/>
+        <result property="seal_type_id" column="seal_type_id"/>
+        <result property="seal_person_id" column="seal_person_id"/>
+        <result property="unit_id" column="unit_id"/>
+        <result property="seal_start_time" column="seal_start_time"/>
+        <result property="seal_end_time" column="seal_end_time"/>
+        <result property="device_code" column="device_code"/>
+        <result property="is_uk" column="is_uk"/>
+        <result property="seal_standard" column="seal_standard"/>
+        <result property="app_sym_key_enc" column="app_sym_key_enc"/>
+        <result property="data_sym_key_enc" column="data_sym_key_enc"/>
+        <result property="enc_file" column="enc_file"/>
+        <result property="usb_key_info" column="usb_key_info"/>
+        <result property="task_id" column="task_id"/>
+
+        <result property="signature" column="signature"/>
+        <result property="input_time" column="input_time"/>
+        <result property="input_user_id" column="input_user_id"/>
+        <result property="state" column="state"/>
+        <result property="jbr_card_data" column="jbr_card_data"/>
+        <result property="jbr_card_type" column="jbr_card_type"/>
+        <result property="jbr_card_name" column="jbr_card_name"/>
+        <result property="uk_id" column="uk_id"/>
+        <result property="uk_type" column="uk_type"/>
+        <association property="sealImg" column="seal_img_id" select="com.chen.dao.SealImgMapper.findSealImgById" javaType="com.chen.entity.SealImg"/>
+
+        <association property="certificate" column="seal_cert_id" select="com.chen.dao.CertificateMapper.findCertificateById" javaType="com.chen.entity.Certificate"/>
+    </resultMap>
+
+    <insert id="addSeal"  keyProperty="seal_id" parameterType="com.chen.entity.Seal" >
+        INSERT INTO
+        seal(seal_id,seal_code,seal_name,seal_img_id,seal_cert_id,seal_type_id,seal_person_id,unit_id,seal_start_time,
+        seal_end_time,device_code,is_uk,seal_standard,app_sym_key_enc,data_sym_key_enc,enc_file,usb_key_info,task_id,
+        signature,input_time,input_user_id,state,jbr_card_data,jbr_card_type,jbr_card_name,uk_id,uk_type)
+        VALUES
+        (#{seal_id},#{seal_code},#{seal_name},#{seal_img_id},#{seal_cert_id},#{seal_type_id},#{seal_person_id},#{unit_id},#{seal_start_time},#{
+        seal_end_time},#{device_code},#{is_uk},#{seal_standard},#{app_sym_key_enc},#{data_sym_key_enc},#{enc_file},#{usb_key_info},#{task_id},#{
+        signature},#{input_time},#{input_user_id},#{state},#{jbr_card_data},#{jbr_card_type},#{jbr_card_name},#{uk_id},#{uk_type})
+    </insert>
+
+
+    <select id="findSealListByKeyword" resultMap="sealMap">
+        SELECT * FROM seal
+        WHERE
+        state = 1
+        and unit_id = #{unitId}
+        and
+        concat(seal_name,jbr_card_name,jbr_card_data) like CONCAT('%',#{keyword},'%')
+    </select>
+
+<!--    <select id="findSealByUnitAndType" resultMap="sealMap" >-->
+<!--        SELECT * FROM seal where unit_id = #{sOrgID} and sealTypeId = #{sealType} and sealState=1-->
+<!--    </select>-->
+
+    <select id="findSealListByUKId" resultMap="sealMap" >
+        SELECT * FROM seal where uk_id = #{ukid} and state = 1  ORDER BY input_time DESC
+    </select>
+
+    <select id="findSealByName" resultMap="sealMap" >
+        SELECT * FROM seal
+        LEFT JOIN unit on seal.unit_id = unit.unit_id
+        where seal.seal_name = #{sealName} and unit.unit_name = #{unitName} and seal.state=1
+    </select>
+
+    <select id="findSealList" resultMap="sealMap">
+        SELECT * FROM seal
+        <where>
+            <if test="seal_id != null">
+                 seal_id = #{seal_id}
+            </if>
+            <if test="seal_code != null">
+                AND seal_code = #{seal_code}
+            </if>
+            <if test="seal_name != null">
+                AND seal_name = #{seal_name}
+            </if>
+            <if test="seal_type_id != null">
+                AND seal_type_id = #{seal_type_id}
+            </if>
+            <if test="seal_person_id != null">
+                AND seal_person_id = #{seal_person_id}
+            </if>
+            <if test="unit_id != null">
+                AND unit_id = #{unit_id}
+            </if>
+            <if test="device_code != null">
+                AND device_code = #{device_code}
+            </if>
+            <if test="is_uk != 0">
+                AND is_uk = #{is_uk}
+            </if>
+            <if test="seal_standard != null">
+                AND seal_standard = #{seal_standard}
+            </if>
+            <if test="task_id != null">
+                AND task_id = #{task_id}
+            </if>
+            <if test="input_user_id != null">
+                AND input_user_id = #{input_user_id}
+            </if>
+            <if test="uk_id != null">
+                AND uk_id = #{uk_id}
+            </if>
+
+            <if test="state != null">
+                AND state = #{state}
+            </if>
+        </where>
+        ORDER BY input_time DESC
+    </select>
+
+    <select id="findSealTypeById" resultType="com.chen.entity.SealType">
+        SELECT * FROM sealtype where  sealTypeId = #{typeId}
+    </select>
+
+<!--    <delete id="delSeal"  parameterType="com.chen.entity.Seal">-->
+<!--        delete  FROM seal-->
+<!--        where sealId = #{sealId}-->
+<!--    </delete>-->
+
+<!--    &lt;!&ndash; 根据剧典id list查询剧典 &ndash;&gt;-->
+<!--    <select id="findSealListByIdNums" resultMap="sealMap">-->
+<!--        select * from seal where sealHwIdNum in-->
+<!--        <foreach collection="list" item="sealHwIdNum" open="(" close=")" separator=",">-->
+<!--            #{sealHwIdNum}-->
+<!--        </foreach>-->
+<!--    </select>-->
+
+    <update id="updateSeal"  parameterType="com.chen.entity.Seal">
+        update  seal
+        <set>
+            <if test="seal_code != null">
+                seal_code = #{seal_code},
+            </if>
+            <if test="seal_name != null">
+                seal_name = #{seal_name},
+            </if>
+            <if test="seal_img_id != null">
+                seal_img_id = #{seal_img_id},
+            </if>
+            <if test="seal_cert_id != null">
+                seal_cert_id = #{seal_cert_id},
+            </if>
+            <if test="seal_type_id != null">
+                seal_type_id = #{seal_type_id},
+            </if>
+            <if test="seal_person_id != null">
+                seal_person_id = #{seal_person_id},
+            </if>
+            <if test="unit_id != null">
+                unit_id = #{unit_id},
+            </if>
+
+            <if test="seal_start_time != null">
+                seal_start_time = #{seal_start_time},
+            </if>
+            <if test="seal_end_time != null">
+                seal_end_time = #{seal_end_time},
+            </if>
+
+            <if test="device_code != null">
+                device_code = #{device_code},
+            </if>
+            <if test="is_uk != 0">
+                is_uk = #{is_uk},
+            </if>
+            <if test="seal_standard != 0">
+                seal_standard = #{seal_standard},
+            </if>
+            <if test="task_id != null">
+                task_id = #{task_id},
+            </if>
+            <if test="usb_key_info != null">
+                usb_key_info = #{usb_key_info},
+            </if>
+            <if test="enc_file != null">
+                enc_file = #{enc_file},
+            </if>
+            <if test="data_sym_key_enc != null">
+                data_sym_key_enc = #{data_sym_key_enc},
+            </if>
+            <if test="app_sym_key_enc != null">
+                app_sym_key_enc = #{app_sym_key_enc},
+            </if>
+            <if test="signature != null">
+                signature = #{signature},
+            </if>
+            <if test="input_time != null">
+                input_time = #{input_time},
+            </if>
+            <if test="jbr_card_data != null">
+                jbr_card_data = #{jbr_card_data},
+            </if>
+            <if test="jbr_card_type != null">
+                jbr_card_type = #{jbr_card_type},
+            </if>
+            <if test="jbr_card_name != null">
+                jbr_card_name = #{jbr_card_name},
+            </if>
+            <if test="input_user_id != null">
+                input_user_id = #{input_user_id},
+            </if>
+            <if test="uk_id != null">
+                uk_id = #{uk_id},
+            </if>
+            <if test="state != null">
+                state = #{state}
+            </if>
+        </set>
+        where seal_id = #{seal_id}
+    </update>
+
+    <select id="findSealById" resultMap="sealMap">
+        select * from seal where seal_id  = #{sealId}
+    </select>
+
+<!--    <select id="findSealCountByUnitId" resultType="int">-->
+<!--        select  COUNT(*) from seal where unitId  = #{unitId} AND sealState !=2  group  by sealId-->
+<!--    </select>-->
+
+    <select id="findSealTypeList" resultType="com.chen.entity.SealType">
+        select * from sealtype
+    </select>
+
+    <select id="findSealStandardList" resultType="com.chen.entity.SealStandard">
+        select * from seal_standard where state = 1 ORDER BY s_order
+    </select>
+
+    <select id="findSealSaveType" resultType="com.chen.entity.SealSaveType">
+        select * from seal_save_type where state = 1 ORDER BY st_order
+    </select>
+    <select id="findUKDll" resultType="com.chen.entity.UKDll">
+        select * from uk_dll where state = 1 and seal_standard = #{sealStandard}
+    </select>
+    <select id="getUKTypeById" resultType="com.chen.entity.UKDll">
+        select * from uk_dll where state = 1 and id = #{id}
+    </select>
+    <select id="findSealInDate" resultType="com.chen.entity.SealInDate">
+        select * from seal_indate ORDER BY default_indate
+    </select>
+
+    <select id="getSealCount" resultType="int">
+        select  COUNT(*) from seal where state = 1
+    </select>
+    <select id="getSealCountByType" resultType="int">
+        select  COUNT(*) from seal where state = 1 and seal_type_id = #{sealType}
+    </select>
+    <select id="getSealCountBySeal" resultType="int">
+        select  COUNT(*) from seal where state = 1 and seal_type_id != 'ESS001'
+    </select>
+    <delete id="deleteSealById" parameterType="String">
+        DELETE FROM seal where seal_id = #{sealId}
+    </delete>
+
+</mapper>

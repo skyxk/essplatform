@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chen.dao.DepartmentMapper">
+
+    <resultMap type="Department" id="departmentMap">
+        <id property="dep_id" column="dep_id"/>
+        <result property="dep_name" column="dep_name"/>
+        <result property="input_time" column="input_time"/>
+        <result property="input_user_id" column="input_user_id"/>
+        <result property="unit_id" column="unit_id"/>
+        <result property="state" column="state"/>
+    </resultMap>
+
+    <select id="findDepartmentList"  resultMap="departmentMap">
+        SELECT * FROM department
+        <where>
+            state = #{state}
+            <if test="dep_id != null">
+                dep_id = #{dep_id}
+            </if>
+            <if test="dep_name != null">
+                AND dep_name = #{dep_name}
+            </if>
+            <if test="input_time != null">
+                AND input_time = #{input_time}
+            </if>
+            <if test="input_user_id != null">
+                AND input_user_id = #{input_user_id}
+            </if>
+            <if test="unit_id != null">
+                AND unit_id = #{unit_id}
+            </if>
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.chen</groupId>
+        <artifactId>ess</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+<!--        <relativePath>../pom.xml</relativePath>-->
+    </parent>
+
+    <artifactId>platform-dao</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>platform-dao</name>
+    <description>Demo project for Spring Boot</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.chen</groupId>
+            <artifactId>platform-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.chen</groupId>
+            <artifactId>platform-entity</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter -->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+        </dependency>
+        <!--达梦数据库驱动，需先导入本地仓库-->
+        <dependency>
+            <groupId>com.dm</groupId>
+            <artifactId>DmJdbcDriver</artifactId>
+            <version>1.8.0</version>
+        </dependency>
+        <!--神舟通用数据库驱动-->
+        <dependency>
+            <groupId>com.oscarJDBC</groupId>
+            <artifactId>oscarJDBC</artifactId>
+            <version>1.0.0.RELEASE</version>
+        </dependency>
+        <!--人大金仓数据库驱动-->
+        <dependency>
+            <groupId>com.kingbase8</groupId>
+            <artifactId>kingJDBC</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+
+</project>

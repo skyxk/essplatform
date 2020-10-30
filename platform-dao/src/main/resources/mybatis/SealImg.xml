@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chen.dao.SealImgMapper">
+
+    <resultMap type="com.chen.entity.SealImg" id="sealImgMap">
+        <id property="img_id" column="img_id"/>
+        <result property="img_jpg" column="img_jpg"/>
+        <result property="img_gif_data" column="img_gif_data"/>
+        <result property="img_hash" column="img_hash"/>
+        <result property="image_h" column="image_h"/>
+        <result property="image_w" column="image_w"/>
+        <result property="image_type" column="image_type"/>
+    </resultMap>
+
+    <select id="findSealImgById" resultType="com.chen.entity.SealImg" >
+        SELECT * FROM seal_img
+        WHERE img_id = #{img_id}
+    </select>
+
+    <insert id="addSealImg"  parameterType="com.chen.entity.SealImg">
+        INSERT INTO
+        seal_img(img_id,img_jpg,img_gif_data,img_hash,image_h,image_w,image_type)
+        VALUES
+        (#{img_id},#{img_jpg},#{img_gif_data},#{img_hash}
+        ,#{image_h},#{image_w},#{image_type})
+    </insert>
+
+<!--    <delete id="deleteSealImgById"  parameterType="String">-->
+<!--        DELETE FROM seal_img-->
+<!--        WHERE img_id = #{img_id}-->
+<!--    </delete>-->
+</mapper>

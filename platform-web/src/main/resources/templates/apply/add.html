@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en" class="no-ie" style="overflow:hidden;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="renderer" content="webkit"/>
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/pintuer.css}" href="../../static/css/pintuer.css"/>
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="../../static/css/admin.css"/>
+    <link rel="stylesheet" th:href="@{/css/common.css}" href="../../static/css/common.css"/>
+    <script th:src="@{/js/jquery-3.2.1.min.js}" src="../../static/js/jquery-3.2.1.min.js"></script>
+    <script th:src="@{/js/bootstrap.js}" src="../../static/js/bootstrap.js"></script>
+    <!--    弹框插件-->
+    <link rel="stylesheet" th:href="@{/jquery-dialogbox/jquery.dialogbox-1.0.css}"
+          href="../../static/jquery-dialogbox/jquery.dialogbox-1.0.css"/>
+    <script th:src="@{/jquery-dialogbox/jquery.dialogbox-1.0.js}"
+            src="../../static/jquery-dialogbox/jquery.dialogbox-1.0.js"></script>
+    <script th:src="@{/js/pintuer.js}" src="../../static/js/pintuer.js"></script>
+    <script th:src="@{/js/quit.js}" src="../../static/js/quit.js"></script>
+    <style type="text/css">
+        /*上传框样式*/
+        .uploader { position:relative; display:inline-block; overflow:hidden; cursor:default; padding:0;
+            margin:10px 0px; -moz-box-shadow:0px 0px 5px #ddd; -webkit-box-shadow:0px 0px 5px #ddd;
+            box-shadow:0px 0px 5px #ddd; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; }
+        .filename { float:left; display:inline-block; outline:0 none; height:32px; width:180px; margin:0; padding:8px 10px; overflow:hidden; cursor:default; border:1px solid; border-right:0; font:9pt/100% Arial, Helvetica, sans-serif; color:#777; text-shadow:1px 1px 0px #fff; text-overflow:ellipsis; white-space:nowrap; -moz-border-radius:5px 0px 0px 5px; -webkit-border-radius:5px 0px 0px 5px; border-radius:5px 0px 0px 5px; background:#f5f5f5; background:-moz-linear-gradient(top, #fafafa 0%, #eee 100%); background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #fafafa), color-stop(100%, #f5f5f5)); filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fafafa', endColorstr='#f5f5f5', GradientType=0);
+            border-color:#ccc; -moz-box-shadow:0px 0px 1px #fff inset; -webkit-box-shadow:0px 0px 1px #fff inset; box-shadow:0px 0px 1px #fff inset; -moz-box-sizing:border-box; -webkit-box-sizing:border-box; box-sizing:border-box; }
+        .button1 { float:left; height:32px; display:inline-block; outline:0 none; padding:8px 12px; margin:0; cursor:pointer; border:1px solid; font:bold 9pt/100% Arial, Helvetica, sans-serif; -moz-border-radius:0px 5px 5px 0px; -webkit-border-radius:0px 5px 5px 0px; border-radius:0px 5px 5px 0px; -moz-box-shadow:0px 0px 1px #fff inset; -webkit-box-shadow:0px 0px 1px #fff inset; box-shadow:0px 0px 1px #fff inset; }
+        .uploader input[type=file] { position:absolute; top:0; right:0; bottom:0; border:0; padding:0; margin:0;
+            height:30px; cursor:pointer; filter:alpha(opacity=0); -moz-opacity:0; -khtml-opacity: 0; opacity:0; }
+        .w300{width: 300px;float:left;}
+        .w150{width: 150px;float:left;}
+        .w230{width: 250px;float:left;}
+        .form-x .form-group .label {width: 170px;}
+        .form-x .form-group .field {width: calc(100% - 170px);}
+    </style>
+</head>
+<body>
+    <div class="panel admin-panel">
+        <div class="panel-head"><strong class="icon-reorder"> 印章申请</strong>
+            <a href="" style="float:right;" th:text="${unit.unit_name}"></a>
+        </div>
+        <div class="padding border-bottom form-x" >
+            <ul class="search" style="padding-left:10px;">
+                <li><a class="button border-main icon-plus-square-o" href="javaScript:window.location.href = document.referrer;"> 返回</a></li>
+            </ul>
+        </div>
+        <form method="post" class="form-x" id="applyInfo_from" >
+            <div class="body-content">
+                <ul class="search">
+                    <li class="form-group">
+                        <div class="label">
+                            <label> 印章类型：</label>
+                        </div>
+                        <div class="field">
+                            <select id="sealTypeId" name="sealTypeId"  class="input w300" onchange="changeSealType()">
+                                <div th:each="sealType,sealTypeStat:${sealTypeList}">
+                                    <option th:value="${sealType.sealTypeId}"
+                                            th:text="${sealType.sealTypeName}">局章
+                                    </option>
+                                </div>
+                            </select>
+                        </div>
+                    </li>
+                    <li class="form-group" id="searchPerson" style="width:360px;display: none">
+                        <div class="field" >
+                            <input type="text" placeholder="输入人员关键字" id="keywords" class="input" style="width: 200px;"/>
+                        </div>
+                        <button type="button" class="button icon-search" style="width: 100px;" onclick="searchPerson()">查找</button>
+                    </li>
+                </ul>
+                <ul class="search" >
+                    <input type="hidden" id="applyType" name="applyType" th:value="${applyType}"/>
+                    <input type="hidden" id="unitId" name="unitId" th:value="${unit.unit_id}"/>
+                    <li class="form-group">
+                        <div class="label">
+                            <label>印章名称：</label>
+                        </div>
+                        <div class="field">
+                            <input type="text" class="input w300" id="sealName" name="sealName" value="" />
+                            <span style="color: #ff0000">&nbsp&nbsp&nbsp*</span>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="search" id="person_div" style="display: none">
+                    <li class="form-group" >
+                        <div class="label">
+                            <label>手签人标识：</label>
+                        </div>
+                        <div class="field">
+                            <input type="text"  class="input w300"  id="personName" value="" readonly />
+                            <input type="hidden"  class="input w200" name="seal_person_id" id="seal_person_id" value="" readonly />
+                        </div>
+                    </li>
+                </ul>
+                <ul class="search" >
+                    <li class="form-group">
+                        <div class="label">
+                            <label>经办人姓名：</label>
+                        </div>
+                        <div class="field">
+                            <input type="text"  class="input w300" id="jbr_name" name="jbr_name" value="" />
+                            <span style="color: #ff0000">&nbsp&nbsp&nbsp*</span>
+                            <span >（带 * 号的为必填项）</span>
+                        </div>
+                    </li>
+                    <li class="form-group">
+                        <div class="label">
+                            <label>经办人信息：</label>
+                        </div>
+                        <div class="field">
+                            <input type="text"  class="input w300" id="jbr_number" name="jbr_number" value="" />
+                        </div>
+                    </li>
+                </ul>
+                <ul class="search" >
+                    <li class="form-group">
+                        <div class="label">
+                            <label>印章申请材料：</label>
+                        </div>
+                        <div class="field">
+                            <div class="uploader white">
+                                <input type="text" id="file_name" value="多个文件请压缩后上传" class="filename input w230" readonly/>
+                                <input type="button" class="button1" value="添加文件"/>
+                                <input type="file" id="upload_file"  name="upload_file"/>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="search" >
+                    <li class="form-group">
+                        <div class="label">
+                            <label></label>
+                        </div>
+                        <div class="field">
+                            <button type="button" class="button bg-main icon-check-square-o w150" id="submitButton"> 提交申请</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </form>
+    </div>
+</body>
+<script  type="text/javascript" th:inline="javascript">
+    $(function(){
+        changeSealType();
+    });
+
+    $("#upload_file").change(function(){
+        var fl=this.files.length;
+        for(var i=0;i<fl;i++){
+            var file = this.files[i];
+            //上传文件格式
+            var imgFileType = file.name.toLowerCase().split('.').splice(-1);
+            if((file.size/1048576)<6){
+                if("rar" == imgFileType||"zip" == imgFileType||"7z" == imgFileType){
+                }else{
+                    alert("文件格式错误，请重新上传");
+                    $("#upload_file").val("");
+                }
+            }else{
+                alert("请上传小于5兆的文件！");
+                $("#upload_file").val("");
+            }
+        }
+    });
+    // 获取项目的相对地址
+    function getPath() {
+        var pathName = window.location.pathname.substring(1);
+        var webName = pathName == '' ? '' : pathName.substring(0,
+            pathName.indexOf('/'));
+        if (webName == "") {
+            return window.location.protocol + '//'
+                + window.location.host;
+        } else {
+            return window.location.protocol + '//'
+                + window.location.host + '/' + webName;
+        }
+    }
+
+    $("#submitButton").click(function () {
+        if (isNull($('#sealName').val())){
+            alert("印章名称不可为空");
+            return;
+        }else{
+            var len = getBLen($('#sealName').val());
+            if (len<3||len>50){
+                alert("印章名称长度应在3-50之间");
+                return;
+            }
+            if(!is_forbid($('#sealName').val())){
+                alert("印章名称包含特殊字符，不可使用");
+                return;
+            }
+        }
+        if (isNull($('#jbr_name').val())){
+            alert("经办人不可为空");
+            return;
+        }
+        else{
+            var len = getBLen($('#jbr_name').val());
+            if (len<3||len>50){
+                alert("经办人长度应在3-50之间");
+                return;
+            }
+            if(!is_forbid($('#jbr_name').val())){
+                alert("经办人包含特殊字符，不可使用");
+                return;
+            }
+        }
+        if(!is_forbid($('#jbr_number').val())){
+            alert("经办人信息包含特殊字符，不可使用");
+            return;
+        }
+        if ($('#sealTypeId').val()=="ESS001"){
+            if (isNull($('#seal_person_id').val())){
+                alert("请请选择人员标识！");
+                return;
+            }
+        }
+        let filePath ;
+        if ($('#upload_file')[0].files[0]!=null){
+            var fileObj = document.getElementById('upload_file').files[0]; //获取file对象
+            var FileController = getPath() + "/upload";//此处填写servlet路径
+            var form = new FormData();
+            form.append("upload_file", fileObj);
+            var xhr = new XMLHttpRequest();
+            xhr.open("post", FileController, false);
+            xhr.onload = function () {
+                filePath = xhr.responseText;
+                if(xhr.responseText == "error"){
+                    alert("文件上传错误，请重试！");
+                    return;
+                }
+            };
+            xhr.send(form);
+        }
+        // if(!checkIDCard($('#jbr_number').val())){
+        //   alert("身份证号码有误");
+        //   return;
+        // }
+        let submitDate = {
+            "sealName": $('#sealName').val(), "applyType": $('#applyType').val(),
+            "sealTypeId": $('#sealTypeId').val(), "upload_file": filePath,
+            "jbr_name": $('#jbr_name').val(), "jbr_number": $('#jbr_number').val(),
+            "unitId": $('#unitId').val(), "seal_person_id": $('#seal_person_id').val()
+        };
+        $.ajax({type: "post",
+            url: "/essplatform/apply/add_do",
+            data: submitDate,
+            success: function (data) {
+                let title_1  = "";
+                let message_1  = "";
+                if(data==="success"){
+                    title_1 = "申请成功";
+                    message_1 = "已根据您提交的信息成功提交印章申请，请您等候审核制作！";
+                }else{
+                    title_1 = "申请失败";
+                    message_1 = "申请提交失败，请您重试！";
+                }
+                $('body').dialogbox({
+                    type:"normal",title:title_1,
+                    buttons:[{
+                        Text:"确认",
+                        ClickToClose:true,
+                        callback:function (dialog){
+                            window.location.href = "/essplatform/apply/list?unitId="+$('#unitId').val()+"&pageNum=1";
+                        }
+                    }],
+                    message:message_1
+                });
+            }
+        });
+    });
+    /**
+     * 异步查询人员
+     */
+    function searchPerson() {
+        $.ajax({
+            url: "/essplatform/apply/findPerson",
+            type: "get",
+            data: {"keyword":$("#keywords").val()},
+            success: function (data) {
+                var obj = eval('('+ data +')');
+                if(obj.message=="ESSSUCCESS"){
+                    //成功
+                    var arr=new Array();
+                    arr.push("<table class=\"table table-hover text-center\">");
+                    arr.push("<tr><th width=\"50px\">选择</th><th width=\"60px\">名字</th><th width=\"90px\">标识</th></tr>");
+                    $.each(obj.body,function(name,value) {
+                        arr.push("<tr>");
+                        arr.push("<td><input type=\"radio\" name=\"companyRdoID\" id=\"companyRdoID1\" value=\""+value.person_id+"\"></td>");
+                        arr.push("<td id=\""+value.person_id+"name\">"+value.person_name+"</td>");
+                        arr.push("<td id=\""+value.person_id+"phone\">"+value.name_ap+"</td>");
+                        arr.push("</tr>");
+                    });
+                    arr.push("</table>");
+                    $('body').dialogbox({
+                        type:"normal",title:"人员搜索",
+                        buttons:[{
+                            Text:"确认",
+                            ClickToClose:true,
+                            callback:function (dialog){
+                                var personId = $(dialog).find("input[name='companyRdoID']:checked").val();
+                                $("#personName").val($(dialog).find("#"+personId+"name").text());
+                                $("#sealName").val($(dialog).find("#"+personId+"name").text());
+                                $("#seal_person_id").val(personId);
+                            }
+                        }],
+                        message:arr
+                    });
+                } else if(obj.message=="ESSERROR"){
+                    $('body').dialogbox({
+                        type:"normal",title:"人员搜索",
+                        buttons:[{
+                            Text:"确认",
+                            ClickToClose:true,
+                            callback:function (dialog){
+                            }
+                        }],
+                        message:obj.body
+                    });
+                }
+
+            },
+            error: function (data) {
+                $('body').dialogbox({
+                    type:"normal",title:"服务器错误！",
+                    buttons:[{
+                        Text:"确认",
+                        ClickToClose:true,
+                        callback:function (dialog){
+                        }
+                    }],
+                    message:"请求的服务器或数据错误！请重试！"
+                });
+            }
+        });
+    }
+    function changeSealType() {
+        if(($("#sealTypeId").val()).indexOf("ESS001")!=-1){
+            //展示搜索框
+            $("#searchPerson").show();
+            //展示人员div
+            $("#person_div").show();
+            //重设印章名
+            $("#sealName").val("");
+        }else{
+            //搜索框隐藏
+            $("#searchPerson").hide();
+            //人员隐藏清空
+            $("#person_div").hide();
+            //重设印章名
+            // $("#sealName").val($("#unitName").val()+$("#sealTypeId").find("option:selected").text());
+            //去掉手签标识
+            $("#seal_person_id").val("");
+            //去掉手签标识
+            $("#personName").val("");
+        }
+    }
+</script>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!--查看签章版本的pdf的页面-->
+<html lang="en"  xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>查看版本信息</title>
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            background-color: rgb(234,234,234);
+        }
+        #view {
+            width: 80%;
+            background-color: rgb(234, 234, 234);
+        }
+        .page {
+            margin-top: 2%;
+            text-align: center;
+            float: right;
+            position: relative;
+        }
+        .pic {
+            background-size: cover;
+            border: solid 1px rgb(204, 204, 204);
+        }
+        span{
+            color: rgb(0,138,125);
+        }
+    </style>
+
+    <script type="text/javascript" src="/own/js/jquery-3.2.1.mini.js"></script>
+</head>
+<body>
+<div id="view">
+    <div class="page" th:each="picPath,iterStat: ${picList}">
+        <div class="pic"
+             th:style="'background-image:url('+${picPath.picPath}+');'"
+             th:id="${iterStat.count}" th:page="${picPath.pageSize}"></div>
+
+        <span style="color: rgb(0, 138, 125);">第</span> <span class="picNum"
+                                                              th:text="${iterStat.count}"></span><span
+            style="color: rgb(0, 138, 125);"> 页</span> <span
+            style="color: rgb(0, 138, 125);">/ 共 </span><span class="picNum"
+                                                              th:text="${iterStat.size}"></span><span
+            style="color: rgb(0, 138, 125);"> 页</span><br/>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+     $(document).ready(function () {
+             var width = $("#view").css("width")
+             var pages = ($("#view").children());
+             var arraywidth = new Array();
+             maxPage = $("#view").children().length;
+             for (var i = 1; i <= pages.length; i++) {
+                 var page = $(pages[i - 1]).children()[0];
+                 var paperSize = $(page).attr("page");
+                 arraywidth.push(paperSize.split("_")[0]);
+             }
+             arraywidth.sort();
+             var maxwidth = arraywidth[arraywidth.length - 1];
+             var widthNum = width.split("px")[0] * 0.96;
+             percent = widthNum / maxwidth;
+             percent = percent.toFixed(2);
+             for (var i = 1; i <= pages.length; i++) {
+                 var page = $(pages[i - 1]).children()[0];
+                 var paperSize = $(page).attr("page");
+                 var w = paperSize.split("_")[0] * percent;
+                 var h = paperSize.split("_")[1] * percent;
+                 $(page).css({
+                     "width": w + "px",
+                     "height": h + "px"
+                 });
+             }
+     })
+</script>
+</html>

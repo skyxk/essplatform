@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en" class="no-ie" style="overflow:hidden;">
+<head>
+    <meta charset="UTF-8"/>
+    <title>PDF签章</title>
+    <script type="text/javascript" src="/own/js/jquery-3.2.1.mini.js" th:src="@{/own/js/jquery-3.2.1.mini.js}"></script>
+    <script type="text/javascript"
+    src="/bootstrap-3.3.7-dist/js/bootstrap.js" th:src="@{/bootstrap-3.3.7-dist/js/bootstrap.js}"></script>
+    <script type="text/javascript" src="/layui/layui.js" th:src="@{/layui/layui.js}"></script>
+    <script type="text/javascript" src="/jquery-ui-1.12.1/jquery-ui.js" th:src="@{/jquery-ui-1.12.1/jquery-ui.js}"></script>
+    <script type="text/javascript" src="/own/my.js" th:src="@{/own/my.js}"></script>
+    <script type="text/javascript" src="/mobile/jquery.ui.touch-punch.js" th:src="@{/mobile/jquery.ui.touch-punch.js}"></script>
+    <script type="/layui/layui.all.js" th:src="@{/layui/layui.all.js}"></script>
+    <script type="text/javascript" src="/own/js/addSealjs.js" th:src="@{/own/js/addSealjs.js}"></script>
+<!--    <script type="text/javascript" src="/own/js/addSealjs.js" th:src="@{/own/js/addSealjs2.js}"></script>-->
+
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.css"  th:href="@{/bootstrap-3.3.7-dist/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" href="/font-awesome-4.7.0/css/font-awesome.css"
+          th:href="@{/font-awesome-4.7.0/css/font-awesome.css}"  />
+    <link rel="stylesheet" href="/layui/css/layui.css"      th:href="@{/layui/css/layui.css}" />
+    <link rel="stylesheet" href="/jquery-ui-1.12.1/jquery-ui.css" th:href="@{/jquery-ui-1.12.1/jquery-ui.css}" />
+    <link rel="stylesheet" href="/own/css/addSealcss.css" th:href="@{/own/css/addSealcss.css}" />
+
+</head>
+<body>
+
+<div id="top">
+    <div style="line-height: 60px;
+	font-family:微软雅黑;
+	font-size: large;
+	padding-left: 5%;
+	color: white;
+	float: left;
+	background-color: rgb(0, 138, 125);">ESS-PDF签章</div>
+    <div style="float:right;padding-right:5%;font-size:small;">
+        业务系统：&nbsp<span th:text="${businessName}"></span>&nbsp&nbsp&nbsp&nbsp&nbsp
+        操作人员：&nbsp<span th:text="${userName}"></span>
+    </div>
+</div>
+
+<div id="center">
+    <div id="view">
+        <div class="page" th:each="picPath,iterStat: ${pdfImagesList}">
+
+            <div alt="" class="pic" th:data-src="${picPath.picPath}"  th:id="${iterStat.count}" th:page="${picPath.pageSize}" >
+
+            </div>
+            <span style="color: rgb(0, 138, 125);">
+                第
+                <span class="picNum" th:text="${iterStat.count}"></span>
+                页/共
+                <span class="picNum" th:text="${iterStat.size}"></span>
+                页
+            </span>
+        </div>
+    </div>
+
+    <div id="chose">
+        <div class="list-group">
+            <div style="font-size:x-large;font-family:微软雅黑;margin-left:3%;padding-top:16px;font-weight:bold;">请选择盖章方式
+            </div>
+            <a href="#" class="list-group-item list-group-item" onclick="tuoZhuai();">拖拽签章</a>
+            <a href="#" class="list-group-item list-group-item" onclick="word()">关键字盖章</a>
+        </div>
+    </div>
+
+    <div id="seal">
+        <div style="font-size:x-large;font-family:微软雅黑;margin-left:3%;padding-top:2px;font-weight:bold;">拖拽签章</div>
+
+        <div class="list-group">
+            <a href="#" id="addName" class="list-group-item list-group-item"><span
+                    class="glyphicon glyphicon-pawn" ></span> 签章</a>
+        </div>
+        <div style="font-size:x-large;font-family:微软雅黑;margin-left:3%;padding-top:16px;padding-bottom:16px;font-weight:bold;float: none;">
+            可用印章
+        </div>
+        <div style="width:100%;" >
+            <span th:if="${signs.size()== 0}">
+                没有可用印章
+            </span>
+
+            <div th:if="${signs.size()!= 0}">
+                <div th:each="sign,iterStat: ${signs}" style="">
+                <img class="names" th:id="${sign.sealId}" th:src="'data:image/gif;base64,'+${sign.imgBase64}" th:style="'width: '+${sign.width}+'px;height:'+${sign.height}+'px;'"/>
+                </div>
+            </div>
+        </div>
+<!--        <div class="list-group" onclick="remove();">-->
+<!--            <a id="eraser" href="#"  class="list-group-item list-group-item"><i class="fa fa-eraser" aria-hidden="true"></i>-->
+<!--                删除签章</a>-->
+<!--        </div>-->
+        <div style="height: 10%"></div>
+        <button type="button"   class="btn btn-danger" style="width:100%;">确认盖章</button>
+    </div>
+    <div id="download">
+        <div style="font-size:x-large;font-family:微软雅黑;margin-left:3%;padding-top:2px;font-weight:bold;">下载</div>
+        <div style="width: 100%;margin-top: 60%">
+          <a href="javascript:window.close();"> <button class="btn btn-primary" style="width: 100%">签章成功，请您关闭当前页面</button></a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

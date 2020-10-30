@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en" class="no-ie" style="overflow:hidden;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="renderer" content="webkit"/>
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/pintuer.css}" href="../../static/css/pintuer.css"/>
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="../../static/css/admin.css"/>
+    <link rel="stylesheet" th:href="@{/css/common.css}" href="../../static/css/common.css"/>
+    <script th:src="@{/js/jquery-3.2.1.min.js}" src="../../static/js/jquery-3.2.1.min.js"></script>
+    <script th:src="@{/js/bootstrap.js}" src="../../static/js/bootstrap.js"></script>
+    <!--    弹框插件-->
+    <script th:src="@{/js/pintuer.js}" src="../../static/js/pintuer.js"></script>
+    <script th:src="@{/js/quit.js}" src="../../static/js/quit.js"></script>
+    <style type="text/css">
+        .body-content{
+            width: 60%;
+            margin: 20px 10px;
+            box-shadow: 3px -3px 3px #dedede, -3px 3px 3px #dedede, -3px -3px 3px #dedede;
+            background-color: #f7f7f7;
+        }
+        .option{
+            padding: 10px 40px;
+        }
+        .title{
+            color: #333;
+            width: 130px;
+        }
+        .w150{
+            width: 150px;
+            float:left;
+        }
+        /*弹框样式*/
+        .sgBtn{width: 135px; height: 35px; line-height: 35px; margin-left: 10px; margin-top: 10px; text-align: center;
+            background-color: #0095D9; color: #FFFFFF; float: left; border-radius: 5px;}
+        .rightContent{
+            width: 30%;
+            /*border: 1px #dedede solid;*/
+            margin: 20px 10px;
+            box-shadow: 3px -3px 3px #dedede, -3px 3px 3px #dedede, -3px -3px 3px #dedede;
+            background-color: #f7f7f7;
+        }
+    </style>
+    <link rel="stylesheet" th:href="@{/jquery-dialogbox/jquery.dialogbox-1.0.css}"
+          href="../../static/jquery-dialogbox/jquery.dialogbox-1.0.css"/>
+    <script th:src="@{/jquery-dialogbox/jquery.dialogbox-1.0.js}"
+            src="../../static/jquery-dialogbox/jquery.dialogbox-1.0.js"></script>
+</head>
+<body>
+
+<div class="panel admin-panel">
+    <div class="panel-head" id="add">
+        <strong>
+            <span class="icon-pencil-square-o"></span> 印章详情
+        </strong>
+    </div>
+    <div class="padding border-bottom">
+        <ul class="search" style="padding-left:10px;">
+            <li><a class="button border-main icon-plus-square-o"
+                   href="javaScript:window.location.href = document.referrer;"> 返回</a></li>
+        </ul>
+    </div>
+    <div class="ub">
+        <div class="body-content f-s-14 c-6">
+            <form method="post" class="form-x" action="" id="seal_review_from" enctype="multipart/form-data">
+                <input type="hidden" id="sealId" name="sealId" th:value="${seal.seal_id}"/>
+                <input type="hidden" id="standard" name="sealId" th:value="${seal.seal_standard}"/>
+                <input type="hidden" id="ukid" name="sealId" th:value="${seal.uk_id}"/>
+                <input type="hidden" id="UKType" name="sealId" th:value="${seal.uk_type}"/>
+                <div class="ub option">
+                    <div class="title f-w">印章名称：</div>
+                    <div class="ub-f1" th:text="${seal.seal_name}"></div>
+                </div>
+                <div class="ub option">
+                    <div class="title f-w">印章图片：</div>
+                    <div class="ub-f1" th:switch="${seal.seal_type_id}">
+                        <div  th:case="'ESS001'">
+                            <img th:src="${'data:image/gif;base64,'+seal.sealImg.getImg_gif_data()}" width="120" height="40"/>
+                        </div>
+                        <div  th:case="*">
+                            <img th:src="${'data:image/gif;base64,'+seal.sealImg.getImg_gif_data()}" width="120" height="120"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="ub option">
+                    <div class="title f-w">印章类型：</div>
+                    <div class="ub-f1" th:text="${sealType.sealTypeName}"></div>
+                </div>
+                <div class="ub option">
+                    <div class="title f-w">印章有效期：</div>
+                    <div class="ub-f1"><span th:text="${seal.seal_start_time}"></span>至<span th:text="${seal.seal_end_time}"></span></div>
+                </div>
+                <div class="ub option">
+                    <div class="title f-w">经办人：</div>
+                    <div class="ub-f1" th:text="${seal.jbr_card_name}"></div>
+                </div>
+                <div class="ub option">
+                    <div class="title f-w">经办人信息：</div>
+                    <div class="ub-f1" th:text="${seal.jbr_card_data}"></div>
+                </div>
+                <div class="form-group">
+                    <div class="label">
+                        <label></label>
+                    </div>
+                    <div class="field">
+                        <button type="button" class="button bg-main icon-check-square-o"  id="submit"> 注销</button>
+                        <button type="button" class="button bg-main icon-check-square-o"  id="rework"> 重做</button>
+                        <button type="button" class="button bg-main icon-check-square-o"  id="renew"> 续期</button>
+                        <button th:if="${seal.is_uk==1}" type="button" class="button bg-main icon-check-square-o"  id="write"> 重写UK</button>
+                        <button type="button" class="button bg-main icon-check-square-o"  id="psuse"> 悬挂</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<script  type="text/javascript" th:inline="javascript">
+    $("#submit").click(function(){
+        $.ajax({
+            url: "/essplatform/seal/cancel",
+            type: "post",
+            data: {"sealId": $("#sealId").val()},
+            success: function (data) {
+                if(data == "success"){
+                    $('body').dialogbox({
+                        type:"normal",title:"系统提示",
+                        buttons:[{
+                            Text:"确认",
+                            ClickToClose:true,
+                            callback:function (dialog){
+                                window.location.href = document.referrer;
+                            }
+                        }],
+                        message:'注销成功！'
+                    });
+                }else{
+                    $('body').dialogbox({
+                        type:"normal",title:"系统提示",
+                        buttons:[{
+                            Text:"确认",
+                            ClickToClose:true,
+                            callback:function (dialog){
+                                // window.history.go(-1)
+                            }
+                        }],
+                        message:'注销失败，请您重试！'
+                    });
+                }
+            },
+            error:function (data) {
+                $('body').dialogbox({
+                    type:"normal",title:"操作失败",
+                    buttons:[{
+                        Text:"确认",
+                        ClickToClose:true,
+                        callback:function (dialog){
+
+                        }
+                    }],
+                    message:'您提交的信息有误！'
+                });
+            }
+        });
+    });
+
+    $("#rework").click(function(){
+        $.ajax({
+            url: "/essplatform/apply/rework",
+            type: "post",
+            data: {"sealId": $("#sealId").val()},
+            success: function (data) {
+                if(data == "success"){
+                    $('body').dialogbox({
+                        type:"normal",title:"系统提示",
+                        buttons:[{
+                            Text:"确认",
+                            ClickToClose:true,
+                            callback:function (dialog){
+                                window.location.href = document.referrer;
+                            }
+                        }],
+                        message:'重做申请成功！'
+                    });
+                }else{
+                    $('body').dialogbox({
+                        type:"normal",title:"系统提示",
+                        buttons:[{
+                            Text:"确认",
+                            ClickToClose:true,
+                            callback:function (dialog){
+                                // window.history.go(-1)
+                            }
+                        }],
+                        message:'重做申请失败，请您重试！'
+                    });
+                }
+            },
+            error:function (data) {
+                $('body').dialogbox({
+                    type:"normal",title:"操作失败",
+                    buttons:[{
+                        Text:"确认",
+                        ClickToClose:true,
+                        callback:function (dialog){
+
+                        }
+                    }],
+                    message:'您提交的信息有误！'
+                });
+            }
+        });
+    });
+    $("#renew").click(function(){
+        $.ajax({
+            url: "/essplatform/apply/renew",
+            type: "post",
+            data: {"sealId": $("#sealId").val()},
+            success: function (data) {
+                if(data == "success"){
+                    $('body').dialogbox({
+                        type:"normal",title:"系统提示",
+                        buttons:[{
+                            Text:"确认",
+                            ClickToClose:true,
+                            callback:function (dialog){
+                                window.location.href = document.referrer;
+                            }
+                        }],
+                        message:'重做申请成功！'
+                    });
+                }else{
+                    $('body').dialogbox({
+                        type:"normal",title:"系统提示",
+                        buttons:[{
+                            Text:"确认",
+                            ClickToClose:true,
+                            callback:function (dialog){
+                                // window.history.go(-1)
+                            }
+                        }],
+                        message:'重做申请失败，请您重试！'
+                    });
+                }
+            },
+            error:function (data) {
+                $('body').dialogbox({
+                    type:"normal",title:"操作失败",
+                    buttons:[{
+                        Text:"确认",
+                        ClickToClose:true,
+                        callback:function (dialog){
+                        }
+                    }],
+                    message:'您提交的信息有误！'
+                });
+            }
+        });
+    });
+    function randomFrom() {let d = new Date();return d.getTime();}
+    $("#write").click(function(){
+        $.ajax({
+            url: "/essplatform/download/getUKTypeCodeById",
+            type: "post",
+            data: {"id":$("#UKType").val()},
+            success: function (data) {
+                let socketIP =[[${socketIP}]];
+                let d = "{\"SEALID\":\""+$("#sealId").val()+"\",\"IP\":\""+socketIP+"\",\"PORT\":\"5566\",\"UKTYPE\":\""+data+"\",\"STANDARD\":\""+$("#standard").val()+"\",\"UKID\":\""+$("#ukid").val()+"\"}";
+                $.ajax({
+                    url: "http://127.0.0.1:9990/WriteAKSealInfo",
+                    type: "post",
+                    data: {"RND": randomFrom(),"ASN1INFO":d},
+                    success: function (data) {
+                        if (data.indexOf("ERROR") != -1) {
+                            let obj = eval('('+ data +')');
+                            $('body').dialogbox({type:"normal",title:"系统提示", buttons:[{Text:"确认", ClickToClose:true,
+                                    callback:function (dialog){
+                                    }
+                                }],
+                                message:obj.ERROR
+                            });
+                        }else{
+                            $('body').dialogbox({type:"normal",title:"系统提示", buttons:[{Text:"确认", ClickToClose:true,
+                                    callback:function (dialog){
+                                        window.location.href = document.referrer;
+                                    }
+                                }],
+                                message:"USKBKEY写入成功"
+                            });
+                        }
+                    },
+                    error:function (data) {
+                        $('body').dialogbox({type:"normal",title:"系统提示", buttons:[{Text:"确认", ClickToClose:true,
+                                callback:function (dialog){
+                                }
+                            }],
+                            message:"访问异常，请检查后重试！"
+                        });
+                    }
+                });
+            }
+        });
+    });
+
+    function switch_pause(sealId,sealState){
+        var target_a = '#'+sealId+'a';
+        var target = '#'+sealId+'b';
+        $.ajax({
+            url: "${pageContext.request.contextPath}/seal/seal_pause_switch.html",
+            type: "get",
+            data:  {"sealId":sealId,"sealState":sealState},
+            success: function (data) {
+                if($(target).val()=="恢复"){
+                    $(target).val("悬挂");
+                    $(target_a).text("有效");
+                }else {
+                    $(target).val("恢复");
+                    $(target_a).text("暂停");
+                }
+            }
+        });
+    }
+</script>
+</html>

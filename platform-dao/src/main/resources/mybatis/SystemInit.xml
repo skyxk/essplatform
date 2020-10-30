@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chen.dao.SystemInitMapper">
+
+    <select id="findSystemInit" parameterType="java.lang.String" resultType="com.chen.entity.SystemJurInit">
+        SELECT * FROM sysjur_init
+        WHERE  STATE = 1
+    </select>
+
+    <select id="findSignToken" parameterType="java.lang.String" resultType="String">
+        SELECT password FROM sign_token
+        WHERE  token_id='0000000000000000'
+    </select>
+
+    <select id="findEncryptorServer"  resultType="com.chen.entity.EncryptorServer">
+        SELECT * FROM encryptor_server
+        WHERE  state=1
+    </select>
+
+    <select id="findSystemInitByUnitId" parameterType="java.lang.String" resultType="com.chen.entity.SystemJurInit">
+        SELECT * FROM sysjur_init
+        WHERE  STATE = 1 AND UNIT_ID = #{unitId}
+    </select>
+</mapper>
