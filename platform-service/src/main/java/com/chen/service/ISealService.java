@@ -2,6 +2,9 @@ package com.chen.service;
 
 import com.chen.entity.*;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -36,7 +39,7 @@ public interface ISealService {
 
     String getASN1SealData(String seal_id, String seal_type_id, String seal_name, String cert_id,
                            String input_time, String seal_start_time, String seal_end_time, byte[] bPicData,
-                           int imgW, int imgH) throws ParseException;
+                           int imgW, int imgH) throws ParseException, NoSuchAlgorithmException, InvalidKeyException, SignatureException;
 
     UKDll getUKTypeById(String id);
 
@@ -45,4 +48,13 @@ public interface ISealService {
     boolean verifySealCount(String sealType,String unitId);
 
     boolean deleteSealById(String sealId);
+
+    Seal finSealByPersonId(String person_id);
+
+    Seal findSealBySealName(String sealName);
+
+    List<Seal> findSealByUidAndBid(String unitId, String depId);
+
+    List<Seal> getSealByUidAndType(String unitId, String sealType);
+
 }

@@ -15,4 +15,6 @@ public interface CertificateMapper {
     List<Algorithm> findAlgorithm();
 
     List<CertSource> findCertSource();
+
+    int updateCertificate(Certificate certificate);
 }

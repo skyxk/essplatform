@@ -3,13 +3,40 @@
 
 <mapper namespace="com.chen.dao.SignatureLogMapper">
 
-    <resultMap type="SignatureLog" id="signatureLogMap">
-        <id property="signatureLogId" column="signatureLogId"/>
-        <result property="signSerialNum" column="signSerialNum"/>
-        <result property="signTime" column="signTime"/>
+    <resultMap type="com.chen.entity.SignatureLog" id="signatureLogMap">
+        <id property="sign_log_id" column="sign_log_id"/>
+        <result property="sign_user_id" column="sign_user_id"/>
+        <result property="sign_time" column="sign_time"/>
+        <result property="ip" column="ip"/>
+        <result property="seal_id" column="seal_id"/>
+        <result property="seal_type" column="seal_type"/>
+        <result property="unit_id" column="unit_id"/>
+        <result property="dep_id" column="dep_id"/>
+        <result property="terminal_type" column="terminal_type"/>
+        <result property="doc_content" column="doc_content"/>
+        <result property="doc_id" column="doc_id"/>
+        <result property="doc_type" column="doc_type"/>
+        <result property="product_type" column="product_type"/>
+        <result property="mac" column="mac"/>
+        <result property="device_id" column="device_id"/>
+        <result property="business_sys_id" column="business_sys_id"/>
+        <result property="serial_number" column="serial_number"/>
+        <result property="sign_result" column="sign_result"/>
+        <result property="error_content" column="error_content"/>
+        <result property="add_log" column="add_log"/>
     </resultMap>
-    <select id="findSignatureLogBySerNum"  resultMap="signatureLogMap">
-        SELECT signTime FROM signaturelog where signSerialNum = #{serNum}
+
+    <insert id="addSignLog"  keyProperty="sign_log_id" parameterType="com.chen.entity.SignatureLog" >
+        INSERT INTO
+        sign_log(sign_log_id,sign_user_id,sign_time,ip,seal_id,seal_type,unit_id,dep_id,terminal_type,doc_content,doc_id,doc_type,
+        product_type,mac,device_id,business_sys_id,serial_number,sign_result,error_content,add_log)
+        VALUES
+        (#{sign_log_id},#{sign_user_id},#{sign_time},#{ip},#{seal_id},#{seal_type},#{unit_id},#{dep_id},#{terminal_type},#{
+        doc_content},#{doc_id},#{doc_type},#{product_type},#{mac},#{device_id},#{business_sys_id},#{serial_number},#{sign_result},#{
+        error_content},#{add_log})
+    </insert>
+    <select id="findSignatureLogBySerNum" resultMap="signatureLogMap">
+        select * from sign_log where serial_number = #{serial_number}
     </select>
 
 </mapper>

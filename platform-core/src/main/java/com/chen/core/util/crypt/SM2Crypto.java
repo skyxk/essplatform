@@ -31,6 +31,7 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.UUID;
 
+import com.sansec.jce.provider.SwxaProvider;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -131,15 +132,11 @@ public class SM2Crypto {
 		 x509Certificate = (X509Certificate) certificateFactory.generateCertificate(bInput);
 		 String sRootIssuer = x509Certificate.getIssuerDN().getName();
 		 PublicKey issuerPublicKey = x509Certificate.getPublicKey();
-         
-         
 	//	 String sPsw = UUID.randomUUID().toString().replaceAll("-","");
 		 String sPsw = "111111111111111111111";
 		 sPsw = sPsw.substring(0, 6);
 		 CertStruct certStru = new CertStruct();
-		 
 		 System.out.println("PSW:111111");
-			
 		 //生成密钥对
 		 KeyPair keyPair = null;
 		 String sPrivateKey = "";
@@ -293,7 +290,11 @@ public class SM2Crypto {
 		}
 		return null;
 	 }
-	 
+
+
+
+
+
 	 /**
 	  * @author lijin
 	  * @param  sProvince   用户所在的省份
@@ -542,29 +543,23 @@ public class SM2Crypto {
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509","BC");
             ByteArrayInputStream bInput = new ByteArrayInputStream(bCert); 
             x509Certificate = (X509Certificate) certificateFactory.generateCertificate(bInput);
-            
-       //     System.out.println(x509Certificate.getIssuerDN().getName());
-            
+
             PublicKey publicKey = x509Certificate.getPublicKey();
             byte[] bRet = new byte[64];
             byte[] bPub = publicKey.getEncoded();
             System.arraycopy(bPub, bPub.length - 64, bRet, 0, 64);
             return bRet;
         }
-        catch(Exception ex)
-        {
+        catch(Exception ex) {
             System.out.println(ex);
             return null;
         }
     }
-	
-    
     /**
      * 这个函数是为了制作印章过程中对ASN签名
      * @throws IOException
      */
-    public static byte[] SignDateForSeal(byte[] bMakerCert,byte[] bSealForSign,String sPublicKey,String sPrivateKey) throws IOException
-    {
+    public static byte[] SignDateForSeal(byte[] bMakerCert,byte[] bSealForSign,String sPublicKey,String sPrivateKey) throws IOException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
     	//以下组织数据以及计算HASH的方式，与客户端制作印章时相同
     	byte[] bPublicKey = GetPublicKey(bMakerCert);
     	byte[] input = new byte[210];
@@ -583,6 +578,19 @@ public class SM2Crypto {
     	System.arraycopy(bSealForSign, 0, bPlain, bHash.length, bSealForSign.length);
     	bHash = GmUtil.sm3(bPlain);
 
+		//安徽加密机调用签名 其他项目需注释
+//		SwxaProvider swxaProvider = new SwxaProvider("11111111","12345678","12345678");
+//		KeyPair keyPair =
+//				KeyPairGenerator.getInstance("SM2",swxaProvider).generateKeyPair();
+//		Signature signature = Signature.getInstance("SM3WithSM2",swxaProvider);
+//		signature.initSign(keyPair.getPrivate());
+//		signature.update(bHash);
+//		byte[] outsign = signature.sign();
+//		if (outsign ==null){
+//			System.out.println("no sign..................");
+//			return null;
+//		}
+
     	AsymmetricCipherKeyPair bcPair = SM2Util.ConvertToBCKeyPair(sPublicKey, sPrivateKey);
     	if(bcPair == null)
     	{
@@ -592,8 +600,6 @@ public class SM2Crypto {
     	byte[] bVal = GmUtil.sm2(bHash, bcPair);
     	return bVal;
     }
-	
-
     /**
      * 这个函数是为了制作印章过程中对ASN签名
      * @throws IOException 

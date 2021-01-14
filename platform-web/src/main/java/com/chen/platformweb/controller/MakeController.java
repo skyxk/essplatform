@@ -19,6 +19,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -27,6 +30,7 @@ import java.util.Map;
 
 import static com.chen.core.util.Base64Utils.ESSGetBase64Decode;
 import static com.chen.core.util.Base64Utils.ESSGetBase64Encode;
+import static com.chen.core.util.CQ_CAUtils.CreateUserSM2PfxByCA;
 import static com.chen.core.util.DateUtils.getDate;
 import static com.chen.core.util.DateUtils.getDateTime;
 import static com.chen.core.util.FastJsonUtil.toJSONString;
@@ -220,11 +224,11 @@ public class MakeController {
         apply.setApply_state(Constant.MAKE_COMPLETION);
         apply.setCert_id(certId);
         apply.setSeal_standard(standard);
-        if ("null".equals(UKType)) {
+        if ("null".equals(UKType)|| UKType == null ||"".equals(UKType)) {
             apply.setUk_type(0);
             apply.setIs_uk(0);
         }else{
-            apply.setUk_type( Integer.parseInt(UKType));
+            apply.setUk_type(Integer.parseInt(UKType));
             apply.setIs_uk(1);
         }
         apply.setUk_id(ukId);
@@ -270,10 +274,10 @@ public class MakeController {
         //填写ASN1编码的印章数据
 //        if (Integer.parseInt(algorithm)==2){ }
         try {
-            String base64 = sealService.getASN1SealData(apply.getSeal_id(),apply.getSeal_type_id(),apply.getSeal_name(),
-                    apply.getCert_id(),seal.getInput_time(),seal.getSeal_start_time(),seal.getSeal_end_time(),
-                    ESSGetBase64Decode(gifImg),Integer.parseInt(imgW),Integer.parseInt(imgH));
-            seal.setUsb_key_info(base64);
+//            String base64 = sealService.getASN1SealData(apply.getSeal_id(),apply.getSeal_type_id(),apply.getSeal_name(),
+//                    apply.getCert_id(),seal.getInput_time(),seal.getSeal_start_time(),seal.getSeal_end_time(),
+//                    ESSGetBase64Decode(gifImg),Integer.parseInt(imgW),Integer.parseInt(imgH));
+//            seal.setUsb_key_info(base64);
         }catch (Exception e){
             e.printStackTrace();
             return "error";
@@ -282,10 +286,9 @@ public class MakeController {
             //如果申请类型为重做，需先删除旧印章
             boolean d = sealService.deleteSealById(seal.getSeal_id());
         }
-
         boolean a = applyService.updateApply(apply);
         boolean s = sealService.addSeal(seal);
-        boolean sp = statusPublishService.sealStatusSync(seal.getSeal_code(),user.getPerson().getPerson_name());
+//        boolean sp = statusPublishService.sealStatusSync(seal.getSeal_code(),user.getPerson().getPerson_name());
         String ip = PowerUtil.getUserIp(request);
         boolean result2 = logService.addSysLog(user,"制作印章",user.getPerson().getPerson_name()+"制作印章："
                 +seal.getSeal_name(),ip);
@@ -293,7 +296,7 @@ public class MakeController {
     }
     @RequestMapping(value ="through_renew")
     @ResponseBody
-    public String through_renew(String applyId) throws ParseException {
+    public String through_renew(String applyId) throws ParseException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         Apply apply = applyService.findApplyById(applyId);
         Seal seal = sealService.findSealById(apply.getSeal_id());
         seal.setSeal_start_time(apply.getSeal_start_time());
@@ -326,11 +329,10 @@ public class MakeController {
     public String getCertPair(String country,String province,String city, String unit,
                               String department,String name,String startTime,String endTime,String algorithm) {
         if (country==null||province==null||city==null||unit==null||department==null||name==null){
-            return "error";
+            return "error1";
         }
         Certificate certificate =new Certificate();
         certificate.setCert_id(getUUID());
-
         certificate.setCountry(country);
         certificate.setProvince(province);
         certificate.setCity(city);
@@ -341,7 +343,7 @@ public class MakeController {
         IssuerUnit issuerUnit = null;
         CertStruct cert = null;
         if ("1".equals(algorithm)){
-            issuerUnit = issuerUnitMapper.findIssuerUnitByRSA();
+            issuerUnit = issuerUnitService.findIssuerUnitByRSA();
             certificate.setAlgorithm("SHA1withRSA");
             try {
                 cert = CreateUserRSAPfx(province,city,unit,department,name,ESSGetBase64Decode(issuerUnit.getIssuerUnitRoot()),
@@ -353,9 +355,13 @@ public class MakeController {
             issuerUnit = issuerUnitMapper.findIssuerUnitBySM2();
             certificate.setAlgorithm("SM2");
             try {
-                cert = CreateUserSM2Pfx(province,city,unit,department,name,ESSGetBase64Decode(issuerUnit.getIssuerUnitRoot()),
-                        ESSGetBase64Decode(issuerUnit.getIssuerUnitPfx()),issuerUnit.getPfxPwd());
-            } catch (GeneralSecurityException | IOException e) {
+                //自己生成国密证书
+//                cert = CreateUserSM2Pfx(province,city,unit,department,name,ESSGetBase64Decode(issuerUnit.getIssuerUnitRoot()),
+//                        ESSGetBase64Decode(issuerUnit.getIssuerUnitPfx()),issuerUnit.getPfxPwd());
+                //调用CA生成国密证书
+                cert = CreateUserSM2PfxByCA(certificate.getProvince(),certificate.getCity(),certificate.getUnit(),
+                        certificate.getDepartment(),certificate.getCert_name(),"111111");
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -364,13 +370,13 @@ public class MakeController {
             certificate.setCer_base64(ESSGetBase64Encode(cert.bCert));
             certificate.setCert_psw(cert.sPin);
         }else {
-            return "error";
+            return "error2";
         }
         boolean result1 = certificateService.addCertificate(certificate);
         if (result1){
             return certificate.getCert_id();
         }
-        return "error";
+        return "error3";
     }
     @RequestMapping(value ="upLoadCert")
     @ResponseBody
@@ -407,7 +413,7 @@ public class MakeController {
                     }
                     //上传的是pfx证书
                     certificate.setCer_base64(certBase64);
-                    certificate.setCer_base64(pfxBase64);
+                    certificate.setPfx_base64(pfxBase64);
                     certificate.setCert_psw(password);
                 }else {
                     return "{\"error\":\"PFX证书信息缺失\"}";
@@ -520,7 +526,6 @@ public class MakeController {
         boolean b = sealImgService.addSealImg(sealImg);
         apply.setImg_id(sealImg.getImg_id());
         boolean result6 = issuerUnitService.VerifyCert(certBase64);
-
         Certificate certificate =new Certificate();
         if (result6){
             //上传证书
@@ -765,6 +770,87 @@ public class MakeController {
         }else {
             jsonObject.put("code","500");
             jsonObject.put("msg","制章失败");
+        }
+        return jsonObject.toJSONString();
+    }
+
+    /**
+     *提供批量替换印章图片的接口，内部使用。
+     */
+    @RequestMapping(value="/tempApi.do")
+    @ResponseBody
+    public String make_seal_more(String sealName, String imgBase64) {
+        JSONObject jsonObject = new JSONObject();
+        //根据印章名称查找印章
+        Seal seal = sealService.findSealBySealName(sealName);
+
+        //根据上传的图像生成印章图片
+        SealImg sealImg = seal.getSealImg();
+        sealImg.setImg_gif_data(imgBase64);
+
+        boolean result1 = sealImgService.updateSealImg(sealImg);
+        //填写ASN1编码的印章数据
+        try {
+            String base64 = sealService.getASN1SealData(seal.getSeal_id(),seal.getSeal_type_id(),seal.getSeal_name(),
+                    seal.getSeal_cert_id(),seal.getInput_time(),seal.getSeal_start_time(),seal.getSeal_end_time(),
+                    ESSGetBase64Decode(imgBase64),Integer.parseInt(String.valueOf(sealImg.getImage_w())),
+                    Integer.parseInt(String.valueOf(sealImg.getImage_h())));
+            seal.setUsb_key_info(base64);
+        }catch (Exception e){
+            e.printStackTrace();
+            jsonObject.put("code","501");
+            jsonObject.put("msg","生成asn失败");
+            return jsonObject.toJSONString();
+        }
+        boolean c = sealService.updateSeal(seal);
+
+        if (c&&result1){
+            jsonObject.put("code","200");
+            jsonObject.put("sealId",seal.getSeal_id());
+            jsonObject.put("ASN1",seal.getUsb_key_info());
+        }else {
+            jsonObject.put("code","500");
+            jsonObject.put("msg","制章失败");
+        }
+        return jsonObject.toJSONString();
+    }
+    /**
+     *提供批量替换印章图片的接口，内部使用。
+     */
+    @RequestMapping(value="/demo1.do")
+    @ResponseBody
+    public String demo1() {
+        JSONObject jsonObject = new JSONObject();
+        Seal seal = new Seal();
+        List<Seal> sealList = sealService.findSealList(seal);
+        for (Seal seal1 :sealList){
+            seal1.getSeal_cert_id();
+            Certificate certificate = seal1.getCertificate();
+//            IssuerUnit issuerUnit = null;
+            CertStruct cert = null;
+//            issuerUnit = issuerUnitService.findIssuerUnitByRSA();
+            try {
+//                cert = CreateUserRSAPfx(certificate.getProvince(),certificate.getCity(),certificate.getUnit(),
+//                        certificate.getDepartment(),certificate.getCert_name(),ESSGetBase64Decode(issuerUnit.getIssuerUnitRoot()),
+//                        ESSGetBase64Decode(issuerUnit.getIssuerUnitPfx()),issuerUnit.getPfxPwd());
+                cert = CreateUserSM2PfxByCA(certificate.getProvince(),certificate.getCity(),certificate.getUnit(),
+                        certificate.getDepartment(),certificate.getCert_name()+seal.getSeal_person_id(),"111111");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (cert!=null){
+                certificate.setPfx_base64(ESSGetBase64Encode(cert.bPfx));
+                certificate.setCer_base64(ESSGetBase64Encode(cert.bCert));
+                certificate.setCert_psw(cert.sPin);
+            }else {
+                return "error2";
+            }
+            int aa = certificateService.updateCertificate(certificate);
+            if (aa==1){
+                jsonObject.put("成功",certificate.getCert_name()+seal.getSeal_person_id());
+            }else{
+                jsonObject.put("失败",certificate.getCert_name()+seal.getSeal_person_id());
+            }
         }
         return jsonObject.toJSONString();
     }

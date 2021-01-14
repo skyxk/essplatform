@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chen.dao.SealJurMapper">
+
+    <resultMap type="com.chen.entity.SealJur" id="sealImgMap">
+        <id property="sealJurId" column="sealJurId"/>
+        <result property="sealUserId" column="sealUserId"/>
+        <result property="sealId" column="sealId"/>
+        <result property="jurTime" column="jurTime"/>
+        <result property="jurUserId" column="jurUserId"/>
+        <result property="dueTime" column="dueTime"/>
+        <result property="ip" column="ip"/>
+        <result property="useCount" column="useCount"/>
+        <result property="mac" column="mac"/>
+        <result property="fileTypeNum" column="fileTypeNum"/>
+        <result property="businessSysIds" column="businessSysIds"/>
+        <result property="sealOrHw" column="sealOrHw"/>
+        <result property="isAllowTempJur" column="isAllowTempJur"/>
+        <result property="isAlreadyTempJurSeal" column="isAlreadyTempJurSeal"/>
+        <result property="state" column="state"/>
+        <result property="safeHash" column="safeHash"/>
+        <result property="ztDueTime" column="ztDueTime"/>
+        <result property="oldSealJur" column="oldSealJur"/>
+        <result property="zsDueTime" column="zsDueTime"/>
+    </resultMap>
+
+    <select id="selectSealJur" resultMap="sealImgMap" >
+        SELECT * FROM sealjur
+        WHERE img_id = #{img_id}
+    </select>
+
+</mapper>

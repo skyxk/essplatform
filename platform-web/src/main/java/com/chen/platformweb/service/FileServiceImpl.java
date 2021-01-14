@@ -1,7 +1,5 @@
 package com.chen.platformweb.service;
 
-import cn.hutool.core.io.file.FileReader;
-import com.alibaba.fastjson.JSONObject;
 import com.chen.dao.IssuerUnitMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.List;
 
 import static com.chen.core.util.StringUtils.getUUID;
 
@@ -19,8 +16,8 @@ public class FileServiceImpl implements IFileService{
     @Value("${myConfig.tempFilepath}")
     public String tempFilepath;
 
-    @Value("${myConfig.fileTypePath}")
-    public String fileTypePath;
+//    @Value("${myConfig.fileTypePath}")
+//    public String fileTypePath;
     @Autowired
     private IssuerUnitMapper issuerUnitMapper;
     @Override
@@ -45,20 +42,20 @@ public class FileServiceImpl implements IFileService{
         }
     }
 
-    @Override
-    public List<String> readFileTypeByFile() {
-
-        try{
-            FileReader fileReader = new FileReader(fileTypePath);
-            String result = fileReader.readString();
-            JSONObject js = JSONObject.parseObject(result);
-
-            return null;
-        }catch (Exception e){
-            e.printStackTrace();
-            return null;
-        }
-    }
+//    @Override
+//    public List<String> readFileTypeByFile() {
+//
+//        try{
+//            FileReader fileReader = new FileReader(fileTypePath);
+//            String result = fileReader.readString();
+//            JSONObject js = JSONObject.parseObject(result);
+//
+//            return null;
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
     //    @Override
 //    public Map<String, String> getCertBase64(Certificate certificate) {

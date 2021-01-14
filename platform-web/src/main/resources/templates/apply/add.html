@@ -22,7 +22,7 @@
     <style type="text/css">
         /*上传框样式*/
         .uploader { position:relative; display:inline-block; overflow:hidden; cursor:default; padding:0;
-            margin:10px 0px; -moz-box-shadow:0px 0px 5px #ddd; -webkit-box-shadow:0px 0px 5px #ddd;
+            margin:5px 0px; -moz-box-shadow:0px 0px 5px #ddd; -webkit-box-shadow:0px 0px 5px #ddd;
             box-shadow:0px 0px 5px #ddd; -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; }
         .filename { float:left; display:inline-block; outline:0 none; height:32px; width:180px; margin:0; padding:8px 10px; overflow:hidden; cursor:default; border:1px solid; border-right:0; font:9pt/100% Arial, Helvetica, sans-serif; color:#777; text-shadow:1px 1px 0px #fff; text-overflow:ellipsis; white-space:nowrap; -moz-border-radius:5px 0px 0px 5px; -webkit-border-radius:5px 0px 0px 5px; border-radius:5px 0px 0px 5px; background:#f5f5f5; background:-moz-linear-gradient(top, #fafafa 0%, #eee 100%); background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #fafafa), color-stop(100%, #f5f5f5)); filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fafafa', endColorstr='#f5f5f5', GradientType=0);
             border-color:#ccc; -moz-box-shadow:0px 0px 1px #fff inset; -webkit-box-shadow:0px 0px 1px #fff inset; box-shadow:0px 0px 1px #fff inset; -moz-box-sizing:border-box; -webkit-box-sizing:border-box; box-sizing:border-box; }
@@ -102,15 +102,17 @@
                         <div class="field">
                             <input type="text"  class="input w300" id="jbr_name" name="jbr_name" value="" />
                             <span style="color: #ff0000">&nbsp&nbsp&nbsp*</span>
-                            <span >（带 * 号的为必填项）</span>
+
                         </div>
                     </li>
                     <li class="form-group">
                         <div class="label">
-                            <label>经办人信息：</label>
+                            <label>经办人手机号：</label>
                         </div>
                         <div class="field">
                             <input type="text"  class="input w300" id="jbr_number" name="jbr_number" value="" />
+                            <span style="color: #ff0000">&nbsp&nbsp&nbsp*</span>
+                            <span >（带 * 号的为必填项）</span>
                         </div>
                     </li>
                 </ul>
@@ -125,18 +127,23 @@
                                 <input type="button" class="button1" value="添加文件"/>
                                 <input type="file" id="upload_file"  name="upload_file"/>
                             </div>
+<!--                            <div>-->
+<!--                                <a style="color: #0b6cbc;margin-left: 10px" onclick="downloadSealM()">(点击下载模板)</a>-->
+<!--                            </div>-->
                         </div>
                     </li>
                 </ul>
                 <ul class="search" >
-                    <li class="form-group">
+                    <div class="form-group">
                         <div class="label">
                             <label></label>
                         </div>
                         <div class="field">
-                            <button type="button" class="button bg-main icon-check-square-o w150" id="submitButton"> 提交申请</button>
+                            <button type="button" class="button bg-main icon-check-square-o " id="submitButton"> 提交申请</button>
+                            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            <button type="button" class="button bg-main icon-check-square-o " onclick="downloadSealM()"> 下载模板</button>
                         </div>
-                    </li>
+                    </div>
                 </ul>
             </div>
         </form>
@@ -146,6 +153,10 @@
     $(function(){
         changeSealType();
     });
+
+    function downloadSealM(){
+        window.location.href = "/essplatform/download/getSealDocument";
+    }
 
     $("#upload_file").change(function(){
         var fl=this.files.length;

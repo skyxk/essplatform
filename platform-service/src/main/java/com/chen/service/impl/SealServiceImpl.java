@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -58,6 +61,7 @@ public class SealServiceImpl implements ISealService {
      */
     @Override
     public Seal findSealByName(String unitName, String sealName) {
+        sealName = systemService.encryptString(sealName);
         Seal seal = decryptSeal(sealMapper.findSealByName(unitName,sealName));
         if (seal!=null){
             seal.setSealImg(sealImgService.findSealImgById(seal.getSeal_img_id()));
@@ -87,7 +91,13 @@ public class SealServiceImpl implements ISealService {
 
     @Override
     public List<Seal> findSealListByUnitId(String unitId) {
-        return null;
+        List<Seal> sealList = sealMapper.findSealListByUnitId(unitId);
+        for (Seal seal1 :sealList){
+            seal1 = decryptSeal(seal1);
+            seal1.setSealImg(sealImgService.findSealImgById(seal1.getSeal_img_id()));
+        }
+        return sealList;
+
     }
 
     @Override
@@ -145,7 +155,7 @@ public class SealServiceImpl implements ISealService {
     @Override
     public String getASN1SealData(String seal_id, String seal_type_id, String seal_name, String cert_id,
                                   String input_time, String seal_start_time, String seal_end_time,
-                                  byte[] bPicData, int imgW, int imgH) throws ParseException {
+                                  byte[] bPicData, int imgW, int imgH) throws ParseException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
 
         int iSealType = 1;
         if ("ESS001".equals(seal_type_id)){
@@ -221,6 +231,51 @@ public class SealServiceImpl implements ISealService {
         return result == 1;
     }
 
+    @Override
+    public Seal finSealByPersonId(String person_id) {
+
+        Seal seal = decryptSeal(sealMapper.finSealByPersonId(person_id));
+        if (seal!=null){
+            seal.setSealImg(sealImgService.findSealImgById(seal.getSeal_img_id()));
+        }
+        return seal;
+    }
+
+    @Override
+    public Seal findSealBySealName(String sealName) {
+        sealName = systemService.encryptString(sealName);
+        Seal seal = decryptSeal(sealMapper.findSealBySealName(sealName));
+        if (seal!=null){
+            seal.setSealImg(sealImgService.findSealImgById(seal.getSeal_img_id()));
+        }
+        return seal;
+    }
+
+    /**
+     * 用于重庆中烟项目获取印章列表用
+     * @param unitId 单位ID
+     * @param depId 部门ID
+     * @return 印章列表
+     */
+    @Override
+    public List<Seal> findSealByUidAndBid(String unitId, String depId) {
+        List<Seal> sealList = sealMapper.findSealByUidAndBid(unitId,depId);
+        for (Seal seal1 :sealList){
+            seal1 = decryptSeal(seal1);
+            seal1.setSealImg(sealImgService.findSealImgById(seal1.getSeal_img_id()));
+        }
+        return sealList;
+    }
+
+    @Override
+    public List<Seal> getSealByUidAndType(String unitId, String sealType) {
+        List<Seal> sealList = sealMapper.getSealByUidAndType(unitId,sealType);
+        for (Seal seal1 :sealList){
+            seal1 = decryptSeal(seal1);
+            seal1.setSealImg(sealImgService.findSealImgById(seal1.getSeal_img_id()));
+        }
+        return sealList;
+    }
 
     public Seal encryptSeal(Seal seal){
         if (seal==null){
@@ -255,4 +310,5 @@ public class SealServiceImpl implements ISealService {
         }
         return seal;
     }
+
 }

@@ -9,6 +9,9 @@ import java.io.FileOutputStream;
 //import java.io.FileInputStream;
 //import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Integer;
@@ -114,8 +117,7 @@ public class AKSeal {
 				String 		sAlgOid,		
 				String		sPublicKey,		
 				String		sPrivateKey
-			)
-	{
+			) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
 		try
 		{
 			ASN1EncodableVector Header = CreateHeader(2,cltID);
@@ -214,12 +216,10 @@ public class AKSeal {
 			sealInfo.add(new DERSequence(PropertyInfo));
 			sealInfo.add(new DERSequence(PictureInfo));
 
-			
 			ASN1EncodableVector signInfo = new ASN1EncodableVector();
 			signInfo.add(new DEROctetString(bMakerCert));
 			signInfo.add(new ASN1ObjectIdentifier(sAlgOid));
-			
-			
+
 			ASN1EncodableVector sealForSign = new ASN1EncodableVector();
 			sealForSign.add(new DERSequence(sealInfo));
 			sealForSign.add(new DEROctetString(bMakerCert));

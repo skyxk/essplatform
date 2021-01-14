@@ -30,14 +30,27 @@
     </select>
 
 
-    <select id="findPersonByProvincialUserId" resultMap="personMap">
-        SELECT * FROM person
+    <select id="findPersonBySYS" resultMap="personMap">
+        SELECT * FROM person p
+        LEFT JOIN bu_sys_person bp on bp.person_id = p.person_id
         WHERE
-         provincial_user_id = #{provincialUserId}
+        bp.sys_id = #{sys_id} and bp.bu_sys_per_id = #{sys_per_id}
     </select>
-    <select id="findPersonByIdNum" resultMap="personMap">
-        SELECT * FROM person
+
+    <select id="findPersonIdBySYS" resultType="String">
+        SELECT person_id FROM bu_sys_person
         WHERE
-         id_num = #{idNum}
+        sys_id = #{sys_id} and bu_sys_per_id = #{sys_per_id}
     </select>
+
+<!--    <select id="findPersonByProvincialUserId" resultMap="personMap">-->
+<!--        SELECT * FROM person-->
+<!--        WHERE-->
+<!--         provincial_user_id = #{provincialUserId}-->
+<!--    </select>-->
+<!--    <select id="findPersonByIdNum" resultMap="personMap">-->
+<!--        SELECT * FROM person-->
+<!--        WHERE-->
+<!--         id_num = #{idNum}-->
+<!--    </select>-->
 </mapper>

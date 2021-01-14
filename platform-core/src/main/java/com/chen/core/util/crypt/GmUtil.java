@@ -251,8 +251,6 @@ public class GmUtil {
 //        	System.out.println("no........");
         return btRS;
 	}
-	
-    
     public static byte[] signSm3WithSm2(byte[] msg,byte[] userId,byte[] bPfx,String sPfxPin)
     {
 		String password = sPfxPin; 

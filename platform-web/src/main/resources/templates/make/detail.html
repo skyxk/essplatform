@@ -464,31 +464,6 @@
             }
         }
     });
-    // $("#certDisc").change(function(){
-    //     //清空图片内容
-    //     var fl=this.files.length;
-    //     for(var i=0;i<fl;i++){
-    //         var file = this.files[i];
-    //         //上传文件格式
-    //         var imgFileType = file.name.toLowerCase().split('.').splice(-1);
-    //         var imgFileSize = file.size/1024 + 'kb';
-    //         if("pfx" == imgFileType){
-    //             var reader = new FileReader();
-    //             reader.readAsDataURL(file);
-    //             reader.onload = function(e){
-    //                 let str = e.target.result;
-    //                 let strs = new Array(); //定义一数组
-    //                 strs = str.split(","); //字符分割
-    //                 uploadCert(strs[1]);
-    //                 $("#certDisc").empty();
-    //             };
-    //         }else{
-    //             alert("文件格式错误，请重新 上传");
-    //             //重置file Input 值
-    //             file.value = '';
-    //         }
-    //     }
-    // });
     $("#certGetType").click(function(){
         let certGetType = $("#certGetType").val();
         if (certGetType == 2){

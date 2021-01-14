@@ -14,4 +14,6 @@ public interface ICertificateService {
     List<Algorithm> findAlgorithm();
 
     List<CertSource> findCertSource();
+
+    int updateCertificate(Certificate certificate);
 }

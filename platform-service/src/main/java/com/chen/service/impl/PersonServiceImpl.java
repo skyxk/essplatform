@@ -23,6 +23,17 @@ public class PersonServiceImpl implements IPersonService {
     public Person findPersonById(String id) {
         return decryptPerson(personMapper.findPersonById(id));
     }
+
+    @Override
+    public Person findPersonBySYS(String sys_id, String sys_per_id) {
+        return decryptPerson(personMapper.findPersonBySYS(sys_id,sys_per_id));
+    }
+
+
+    @Override
+    public String findPersonIdBySYS(String sys_id, String sys_per_id) {
+        return personMapper.findPersonIdBySYS(sys_id,sys_per_id);
+    }
     public Person encryptPerson(Person person){
         if (person==null){
             return null;

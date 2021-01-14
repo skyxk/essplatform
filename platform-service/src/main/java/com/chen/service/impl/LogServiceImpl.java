@@ -1,7 +1,9 @@
 package com.chen.service.impl;
 
 import com.chen.core.util.DateUtils;
+import com.chen.dao.SignatureLogMapper;
 import com.chen.dao.SystemLogMapper;
+import com.chen.entity.SignatureLog;
 import com.chen.entity.SystemLog;
 import com.chen.entity.SystemLogIp;
 import com.chen.entity.User;
@@ -15,6 +17,8 @@ import static com.chen.core.util.StringUtils.getUUID;
 public class LogServiceImpl implements ILogService {
     @Autowired
     private SystemLogMapper systemLogMapper;
+    @Autowired
+    private SignatureLogMapper signatureLogMapper;
 
     @Override
     public boolean addSysLog(User user, String powerName, String detail, String ip) {
@@ -36,5 +40,18 @@ public class LogServiceImpl implements ILogService {
         systemLogIp.setMac("");
         int result2 = systemLogMapper.addSystemLogIp(systemLogIp);
         return result2 == 1 && result1 == 1;
+    }
+
+
+    @Override
+    public boolean addSignLog(SignatureLog signatureLog) {
+        int result = signatureLogMapper.addSignLog(signatureLog);
+        return false;
+    }
+
+    @Override
+    public SignatureLog findSignatureLogBySerNum(String signSerialNum) {
+        SignatureLog result = signatureLogMapper.findSignatureLogBySerNum(signSerialNum);
+        return result;
     }
 }

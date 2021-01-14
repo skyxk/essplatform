@@ -72,6 +72,26 @@
         where seal.seal_name = #{sealName} and unit.unit_name = #{unitName} and seal.state=1
     </select>
 
+    <select id="findSealBySealName" resultMap="sealMap" >
+        SELECT * FROM seal
+        where seal.seal_name = #{sealName} and seal.state=1
+    </select>
+
+    <select id="findSealByUidAndBid" resultMap="sealMap" >
+        SELECT * FROM seal
+        where seal.unit_id = #{unitId} and seal.dep_id = #{depId} and seal.state=1 and seal.seal_type_id != 'ESS001'
+    </select>
+
+    <select id="getSealByUidAndType" resultMap="sealMap" >
+        SELECT * FROM seal
+        where seal.unit_id = #{unitId} and seal.seal_type_id = #{sealType} and seal.state=1 and seal.seal_type_id != 'ESS001'
+    </select>
+
+    <select id="findSealListByUnitId" resultMap="sealMap" >
+        SELECT * FROM seal
+        where seal.unit_id = #{unitId} and seal.state = 1
+    </select>
+
     <select id="findSealList" resultMap="sealMap">
         SELECT * FROM seal
         <where>
@@ -261,5 +281,11 @@
     <delete id="deleteSealById" parameterType="String">
         DELETE FROM seal where seal_id = #{sealId}
     </delete>
+
+
+    <select id="finSealByPersonId" resultMap="sealMap" >
+        SELECT * FROM seal
+        where seal_person_id = #{person_id} and state=1
+    </select>
 
 </mapper>

@@ -25,7 +25,7 @@
         <module>platform-entity</module>
         <module>platform-service</module>
         <module>platform-web</module>
-        <module>platform-pdf</module>
+        <module>platform-sign</module>
         <module>platform-itext-develop</module>
     </modules>
     <!-- 配置阿里maven仓库 -->

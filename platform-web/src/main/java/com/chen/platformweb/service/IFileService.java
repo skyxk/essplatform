@@ -16,7 +16,7 @@ public interface IFileService {
      */
     String saveFile(MultipartFile multipartFile);
 
-    List<String> readFileTypeByFile();
+//    List<String> readFileTypeByFile();
 
 
 //    /**

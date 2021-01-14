@@ -3,6 +3,7 @@ package com.chen.platformweb.controller;
 import com.chen.entity.Apply;
 import com.chen.entity.Seal;
 import com.chen.entity.UKDll;
+import com.chen.entity.pdf.PDFDocument;
 import com.chen.platformweb.service.IFileService;
 import com.chen.service.IApplyService;
 import com.chen.service.ISealService;
@@ -18,13 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import static com.chen.core.util.FileUtils.deleteEveryThing;
 import static com.chen.core.util.StringUtils.getUUID;
 
 /**
@@ -107,7 +106,6 @@ public class DownloadController {
     @ResponseBody
     public String uploadFile(HttpServletRequest request, HttpServletResponse response,MultipartFile upload_file) throws IOException{
         response.setHeader("Access-Control-Allow-Origin","*");
-        String filename = "";
         if (upload_file!=null) {
             //保存文件并获取文件储存路径
             try {
@@ -144,4 +142,52 @@ public class DownloadController {
         UKDll ukDll = sealService.getUKTypeById(id);
         return ukDll.getType_code();
     }
+
+    @RequestMapping(value="/getSealDocument")
+    public void getSealDocument(String documentCode, HttpServletResponse response) throws IOException {
+        //设置MIME类型
+        String relativelyPath=System.getProperty( "user.dir" );
+        File file = new File("D:\\SealInfoMould.zip");
+        System.out.println(relativelyPath+"\\SealInfoMould.zip");
+        response.setContentType("application/octet-stream");
+        //或者为response.setContentType("application/x-msdownload");
+        //设置头信息,设置文件下载时的默认文件名，同时解决中文名乱码问题
+        response.addHeader("Content-disposition", "attachment;filename="+
+                new String(("印章制作申请模板.zip").getBytes(),
+                        StandardCharsets.ISO_8859_1));
+        InputStream inputStream=new FileInputStream(file);
+        ServletOutputStream outputStream=response.getOutputStream();
+        byte[] bs=new byte[1024];
+        while((inputStream.read(bs)>0)){
+            outputStream.write(bs);
+        }
+        outputStream.close();
+        inputStream.close();
+    }
+
+    @RequestMapping(value="/getSealAsn1")
+    public void getSealAsn1(String sealId, HttpServletResponse response) throws IOException {
+        //设置MIME类型
+        Seal seal = sealService.findSealById(sealId);
+        String asn1 = seal.getUsb_key_info();
+        FileOutputStream fos = new FileOutputStream(tempFilepath+"tempAsn.txt",false);
+        fos.write(asn1.getBytes());
+        fos.close();
+        File file = new File(tempFilepath+"tempAsn.asn");
+        response.setContentType("application/octet-stream");
+        //或者为response.setContentType("application/x-msdownload");
+        //设置头信息,设置文件下载时的默认文件名，同时解决中文名乱码问题
+        response.addHeader("Content-disposition", "attachment;filename="+
+                new String((seal.getSeal_name()+".asn").getBytes(),
+                        StandardCharsets.ISO_8859_1));
+        InputStream inputStream=new FileInputStream(file);
+        ServletOutputStream outputStream=response.getOutputStream();
+        byte[] bs=new byte[1024];
+        while((inputStream.read(bs)>0)){
+            outputStream.write(bs);
+        }
+        outputStream.close();
+        inputStream.close();
+    }
+
 }

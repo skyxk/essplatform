@@ -1,20 +1,14 @@
 package com.chen.core.util;
+
 import cn.com.infosec.netsign.agent.NetSignAgent;
 import cn.com.infosec.netsign.agent.NetSignResult;
 import cn.com.infosec.netsign.agent.exception.NetSignAgentException;
 import cn.com.infosec.netsign.agent.exception.ServerProcessException;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
-import java.io.*;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.chen.core.util.Base64Utils.ESSGetBase64Decode;
 import static com.chen.core.util.Base64Utils.ESSGetBase64Encode;
-import static java.lang.Thread.sleep;
 
 public class NetSignAgentUtils {
 
@@ -49,69 +43,15 @@ public class NetSignAgentUtils {
             return null;
         }
     }
-
-    public static byte[] SocketSign(byte[] plainText,String documentCode) throws InterruptedException {
-        System.out.println("*******************************4");
-        //0.发送hash和文档编码
-        JSONObject jsonObject_send = new JSONObject();
-        jsonObject_send.put("COM","1");
-        jsonObject_send.put("DOCID",documentCode);
-        jsonObject_send.put("HASH",ESSGetBase64Encode(plainText));
-        String re = clientSocket(jsonObject_send.toJSONString());
-        //1.循环查询签名情况
-        sleep(300);
-        for (int i =0 ;i<70;i++){
-            JSONObject jsonObject_get = new JSONObject();
-            jsonObject_get.put("COM","3");
-            jsonObject_get.put("DOCID",documentCode);
-            String result = clientSocket(jsonObject_get.toJSONString());
-            JSONObject jsonObject_result = JSONObject.parseObject(result);
-            if (jsonObject_result.getString("SIGNVAL")!=null){
-                System.out.println(jsonObject_result.getString("SIGNVAL"));
-                System.out.println("*************************************************");
-                return ESSGetBase64Decode(jsonObject_result.getString("SIGNVAL"));
-            }
-            sleep(500);
+    public static byte[] getSign(String UKID,byte[] sh){
+        String url = "http://localhost:8080/sign/client/getSignValue";
+        Map<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("UKID",UKID);
+        paramsMap.put("sh",ESSGetBase64Encode(sh));
+        String aa = HttpUtils.post(url,paramsMap);
+        if ("error".equals(aa)){
+            return null;
         }
-        return null;
+        return ESSGetBase64Decode(aa);
     }
-    public static String clientSocket(String params){
-        Socket socket = null;
-        try {
-            System.out.println("***************1");
-            socket = new Socket("119.45.7.196", 7788);
-            socket.setKeepAlive(false);
-            OutputStream os = socket.getOutputStream();
-            PrintWriter writer = new PrintWriter(os);
-            writer.write(params);
-            //发送
-            writer.flush();
-            // 读取消息
-            InputStream is = socket.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "utf-8"));
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-            os.close();
-            writer.close();
-            is.close();
-            reader.close();
-            return sb.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (socket != null) {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return null;
-    }
-
-
 }

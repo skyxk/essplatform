@@ -635,5 +635,24 @@ public class FileUtils {
         }
     }
 
+    /**
+     * 将inputStream转化为file
+     * @param is
+     * @param file 要输出的文件目录
+     */
+    public static void inputStream2File(InputStream is, File file) throws IOException {
+        OutputStream os = null;
+        try {
+            os = new FileOutputStream(file);
+            int len = 0;
+            byte[] buffer = new byte[8192];
 
+            while ((len = is.read(buffer)) != -1) {
+                os.write(buffer, 0, len);
+            }
+        } finally {
+            os.close();
+            is.close();
+        }
+    }
 }

@@ -9,4 +9,8 @@ public interface IIssuerUnitService {
     IssuerUnit findIssuerUnitByName(String name);
 
     boolean VerifyCert(String certBase64);
+
+    IssuerUnit findIssuerUnitByRSA();
+
+    IssuerUnit findIssuerUnitBySM2();
 }

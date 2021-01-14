@@ -49,48 +49,17 @@
     <update id="updateCertificate">
         UPDATE certificate
         <set>
-            <if test="cerName != null">
-                cerName = #{cerName},
+            <if test="cer_base64 != null">
+                cer_base64 = #{cer_base64},
             </if>
-            <if test="algorithm != null">
-                algorithm = #{algorithm},
+            <if test="pfx_base64 != null">
+                pfx_base64 = #{pfx_base64},
             </if>
-            <if test="cerClass != null">
-                cerClass = #{cerClass},
+            <if test="cert_psw != null">
+                cert_psw = #{cert_psw},
             </if>
-            <if test="issuer != null">
-                issuer = #{issuer},
-            </if>
-            <if test="issuerUnitId != null">
-                issuerUnitId = #{issuerUnitId},
-            </if>
-            <if test="country != null">
-                country = #{country},
-            </if>
-            <if test="certificateVersion != null">
-                certificateVersion = #{certificateVersion},
-            </if>
-            <if test="province != null">
-                province = #{province},
-            </if>
-            <if test="city != null">
-                city = #{city},
-            </if>
-            <if test="certUnit != null">
-                certUnit = #{certUnit},
-            </if>
-            <if test="certDepartment != null">
-                certDepartment = #{certDepartment},
-            </if>
-            <if test="cerBase64 != null">
-                cerBase64 = #{cerBase64},
-            </if>
-            <if test="pfxBase64 != null">
-                pfxBase64 = #{pfxBase64},
-            </if>
-
         </set>
-        where certificateId = #{certificateId}
+        where cert_id = #{cert_id}
     </update>
 
 </mapper>

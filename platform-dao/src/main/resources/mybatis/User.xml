@@ -44,7 +44,8 @@
         SELECT * FROM users
         WHERE person_id = #{person_id}
             and  (role_id like CONCAT('%','auditor','%')
-            or role_id like CONCAT('%','producer','%'))
+            or role_id like CONCAT('%','producer','%')
+            or role_id like CONCAT('%','signer','%'))
     </select>
 
 

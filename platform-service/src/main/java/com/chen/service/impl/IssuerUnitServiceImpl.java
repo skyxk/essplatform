@@ -3,6 +3,7 @@ package com.chen.service.impl;
 import com.chen.dao.IssuerUnitMapper;
 import com.chen.entity.IssuerUnit;
 import com.chen.service.IIssuerUnitService;
+import com.chen.service.ISystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,8 @@ public class IssuerUnitServiceImpl implements IIssuerUnitService {
 
     @Autowired
     IssuerUnitMapper issuerUnitMapper;
+    @Autowired
+    public ISystemService systemService;
 
     /**
      * 根据颁发者单位查找颁发者单位信息
@@ -32,9 +35,9 @@ public class IssuerUnitServiceImpl implements IIssuerUnitService {
         System.out.println(cerName);
         IssuerUnit issuerUnit =  new IssuerUnit();
         issuerUnit.setIssuerUnitRoot(cerName);
+        issuerUnit.setPfxPwd(systemService.encryptString(issuerUnit.getPfxPwd()));
         return issuerUnit;
     }
-
     /**
      * 验证证书是否可信任机构颁发的
      * @param certBase64 上传证书的base64编码数据
@@ -57,6 +60,17 @@ public class IssuerUnitServiceImpl implements IIssuerUnitService {
         }
         return false;
     }
-
-
+    @Override
+    public IssuerUnit findIssuerUnitByRSA() {
+        IssuerUnit issuerUnit = issuerUnitMapper.findIssuerUnitByRSA();
+        if (issuerUnit!=null){
+            issuerUnit.setPfxPwd(systemService.decryptString(issuerUnit.getPfxPwd()));
+            return issuerUnit;
+        }
+        return null;
+    }
+    @Override
+    public IssuerUnit findIssuerUnitBySM2() {
+        return null;
+    }
 }

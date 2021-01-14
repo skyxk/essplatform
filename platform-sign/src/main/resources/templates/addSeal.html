@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en" class="no-ie" style="overflow:hidden;">
+<head>
+    <meta charset="UTF-8"/>
+    <title>盖章</title>
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.css"/>
+    <script type="text/javascript" src="/own/js/jquery-3.2.1.mini.js"></script>
+    <script type="text/javascript"
+            src="/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="/font-awesome-4.7.0/css/font-awesome.css"/>
+    <link rel="stylesheet" href="/layui/css/layui.css"/>
+    <script type="text/javascript" src="/layui/layui.js"></script>
+    <link rel="stylesheet" href="/jquery-ui-1.12.1/jquery-ui.css"/>
+    <script type="text/javascript" src="/jquery-ui-1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="/mobile/jquery.ui.touch-punch.js"></script>
+    <link rel="stylesheet" href="/own/css/addSealcss.css"/>
+    <script type="/layui/layui.all.js"></script>
+
+    <script type="text/javascript" src="/own/js/addSealjs.js"></script>
+    <style>
+        ul, li {
+            margin: 0;
+            padding: 0;
+        }
+
+        #my{
+            list-style: none;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            position: absolute;
+            display: none;
+        }
+
+        #my li{
+            border-bottom: 1px solid #ccc;
+            padding: 5px 10px;
+            cursor: pointer;
+            background-color: rgb(234,234,234);
+            font-size: large;
+            font-family: 微软雅黑;
+            color: black;
+        }
+
+        #my li:hover{
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+<div id="top">
+    <div style="line-height: 60px;
+	font-family:微软雅黑;
+	font-size: large;
+	padding-left: 5%;
+	color: white;
+	float: left;
+	background-color: rgb(0, 138, 125);">ESS-PDF盖章示例</div>
+    <div style="float:  right;">按F5键返回选择盖章方式</div>
+</div>
+<div id="cener">
+    <div id="view">
+        <div class="page" th:each="pic,iterStat: ${picList}">
+            <div class="pic"
+                 th:style="'background-image:url('+${pic.picPath}+');'"
+                 th:id="${iterStat.count}" th:page="${pic.pageSize}"></div>
+            <span style="color: rgb(0, 138, 125);">第</span>
+            <span class="picNum" th:text="${iterStat.count}"></span>
+            <span style="color: rgb(0, 138, 125);"> 页</span>
+            <span style="color: rgb(0, 138, 125);">/ 共 </span>
+            <span class="picNum" th:text="${iterStat.size}"></span>
+            <span style="color: rgb(0, 138, 125);"> 页</span><br/>
+        </div>
+    </div>
+    <div id="chose">
+
+        <div class="list-group">
+            <div style="font-size:x-large;font-family:微软雅黑;margin-left:3%;padding-top:16px;font-weight:bold;">请选择盖章方式
+            </div>
+            <a href="#" class="list-group-item list-group-item" onclick="tuoZhuai();">拖拽签章</a>
+            <a href="#" class="list-group-item list-group-item" onclick="zuobiao();">页面坐标盖章</a>
+            <a href="#" class="list-group-item list-group-item" onclick="word()">关键字盖章</a>
+        </div>
+    </div>
+    <div id="location">
+
+        <div style="font-size:large;font-family:微软雅黑;margin-left:3%;font-weight:bold;">
+            选择签名
+        </div>
+        <div style="float: none;width:100%;height:10%;">
+            <div class="names" style="background-image: url('/own/image/name.png');border:solid 2px green"></div>
+            <div class="names" style="background-image: url('/own/image/name2.png');"></div>
+        </div>
+        <div style="font-size:x-large;font-family:微软雅黑;margin-left:3%; font-weight:bold;">
+            选择签章
+        </div>
+        <div style="float: none; width:100%;height: 20%;">
+            <div class="seals" style="border:solid 2px green;background-image: url('/own/image/1.png');"></div>
+            <div class="seals" style="background-image: url('/own/image/seal2.png')"></div>
+        </div>
+        <div>*输入完成后按回车键确定页面会自行定位并设置相应的辅助线</div>
+        <div class="input-group">
+            <span class="input-group-addon"><span class="glyphicon glyphicon-tag"></span></span>
+            <input type="number" id="loPageNum" class="form-control" placeholder="请输入页码"
+                   aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon"><span
+                    class="glyphicon glyphicon-resize-horizontal"></span></span>
+            <input type="number" id="x" class="form-control" placeholder="请输入X坐标" aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon"><span class="glyphicon glyphicon-resize-vertical"></span></span>
+            <input type="number" id="y" class="form-control" placeholder="请输入Y坐标" aria-describedby="basic-addon1">
+        </div>
+
+            *注 坐标原点为页面左下角 <br/>
+            <input type="radio" class="up"  checked="true"  name="loup" value="1"  >签名
+            <input type="radio"  class="up"  name="loup"  value="2" >签章
+        <br/>
+        <input class="pfx"  name="lopfx"  type="radio" value="1"  checked="true"/>证书一
+        <input class="pfx"  name="lopfx"  type="radio" value="2" />证书二
+<br/>
+        <input class="din"  name="lodin"  type="radio" value="1"  checked="true"/>中心定位
+        <input class="din"  name="lodin"  type="radio" value="2" />左上角定位
+        <div class="list-group" onclick="remove();">
+            <a id="eraser3" href="#"  class="list-group-item list-group-item"><i class="fa fa-eraser" aria-hidden="true"></i>
+                删除签章</a>
+        </div>
+        <button type="button" onclick="insert();" class="btn btn-primary" style="width: 100%">放入页面</button>
+        <button type="button"   class="btn btn-danger"   style="width: 100%;">确认盖章</button>
+
+    </div>
+    <div id="word">
+        <div style="font-size:x-large;font-family:微软雅黑;margin-left:3%; font-weight:bold;">关键字盖章</div>
+        <div style="font-size:x-large;font-family:微软雅黑;margin-left:3% ;font-weight:bold;">
+            选择签名
+        </div>
+        <div style="float: none;width:100%;height:10%;">
+            <div class="names" style="background-image: url('/own/image/name.png');border:solid 2px green"></div>
+            <div class="names" style="background-image: url('/own/image/name2.png');"></div>
+        </div>
+        <div style="font-size:x-large;font-family:微软雅黑;margin-left:3%;padding-top:2px;padding-bottom:2px;font-weight:bold;">
+            选择签章
+        </div>
+        <div style="float: none; width:100%;height: 20%;">
+            <div class="seals" style="border:solid 2px green;background-image: url('/own/image/1.png');"></div>
+            <div class="seals" style="background-image: url('/own/image/seal2.png')"></div>
+        </div>
+        <div></div>
+        <div class="input-group">
+            <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+            <input type="text" id="key"  class="form-control" placeholder="请输入需要搜索的关键字" aria-describedby="basic-addon1">
+        </div>
+        <div class="checkbox">
+            <input type="radio" class="up"  value="1" checked="true"  name="woup"  >签名
+            <input type="radio" class="up"  value="2"    name="woup"  >签章
+        </div>
+        <input type="radio" class="pfx" checked="true"   name="pfx"  value="1" >证书一
+        <input type="radio" class="pfx" name="pfx" value="2"  >证书二
+        <br/>
+        <input class="din"  name="wodin"  type="radio" value="1"  checked="true"/>中心定位
+        <input class="din"  name="wodin"  type="radio" value="2" />左上角定位
+        <br/>
+        <input class="first"  name="first"  type="radio" value="1"  checked="true"/>首次出现的位置
+        <input class="first"  name="first"  type="radio" value="2" />最后一次出现的位置
+        <button type="button" id="wordbutton" class="btn btn-primary" style="width: 100%">放入页面</button>
+        <div class="list-group" onclick="remove();">
+            <a id="eraser2" href="#"  class="list-group-item list-group-item"><i class="fa fa-eraser" aria-hidden="true"></i>
+                删除签章</a>
+        </div>
+        <button type="button"   class="btn btn-danger"   style="width: 100%;">确认盖章</button>
+    </div>
+    <div id="seal">
+        <div style="font-size:x-large;font-family:微软雅黑;margin-left:3%;padding-top:2px;font-weight:bold;">字段</div>
+
+        <div class="list-group">
+            <a href="#" id="addName" class="list-group-item list-group-item"><span
+                    class="glyphicon glyphicon-pencil"></span> 签名</a>
+            <a href="#" id="addSeal" class="list-group-item list-group-item"><span
+                    class="glyphicon glyphicon-pawn"></span> 盖章</a>
+
+        </div>
+        <div style="font-size:x-large;font-family:微软雅黑;margin-left:3%;padding-top:6px;padding-bottom:6px;font-weight:bold;">
+            选择签名
+        </div>
+        <div style="float: none;width:100%;height:10%;">
+            <div class="names" style="background-image: url('/own/image/name.png');border:solid 2px green"></div>
+            <div class="names" style="background-image: url('/own/image/name2.png');"></div>
+        </div>
+        <div style="font-size:x-large;font-family:微软雅黑;margin-left:3%;padding-top:6px;padding-bottom:6px;font-weight:bold;">
+            选择签章
+        </div>
+        <div style="float: none;width: 100%;height: 20%">
+            <div class="seals" style="border:solid 2px green;background-image: url('/own/image/1.png');"></div>
+            <div class="seals" style="background-image: url('/own/image/seal2.png')"></div>
+        </div>
+        <div class="list-group" onclick="remove();">
+            <a id="eraser" href="#"  class="list-group-item list-group-item"><i class="fa fa-eraser" aria-hidden="true"></i>
+                删除签章</a>
+        </div>
+        <input class="pfx"  name="sepfx"  type="radio" value="1"  checked="true"/>证书一
+        <input class="pfx"  name="sepfx"  type="radio" value="2" />证书二
+        <button type="button"   class="btn btn-danger"   style="width: 100%;">确认盖章</button>
+    </div>
+    <div id="download">
+        <div style="font-size:x-large;font-family:微软雅黑;margin-left:3%;padding-top:2px;font-weight:bold;">下载</div>
+        <div style="width: 100%;margin-top: 60%">
+          <a href="/download"> <button class="btn btn-primary" style="width: 100%" >下载文档</button></a>
+        </div>
+    </div>
+</div>
+
+<div id="bot">&copy;北京诚利通数码技术有限公司</div>
+<ul id="my">
+    <li onclick="trig();">验证签名</li>
+    <li onclick="version()">查看签名版本</li>
+    <li onclick="">查看签名属性</li>
+</ul>
+</body>
+
+</html>

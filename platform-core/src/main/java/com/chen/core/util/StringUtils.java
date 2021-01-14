@@ -1,11 +1,18 @@
 package com.chen.core.util;
 
 
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESedeKeySpec;
+import java.net.URLDecoder;
 import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.chen.core.util.Base64Utils.ESSGetBase64Decode;
 
 
 public class StringUtils {
@@ -150,5 +157,26 @@ public class StringUtils {
             dest = m.replaceAll("");
         }
         return dest;
+    }
+
+    /**
+     * 重庆中烟OA系统单点登录解析
+     * @param urlParam
+     * @return
+     * @throws Exception
+     */
+    public static String decodeSSO(String urlParam)  throws Exception {
+        String key = "C9Uqeq7pUf2FqFfgcONbdk+hE6IlecKt";
+        String paramValue = URLDecoder.decode(urlParam);
+        byte[] keyData = ESSGetBase64Decode(key); // 字符串类型密钥用Base64解码
+        //生成SecretKey
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DESede");
+        DESedeKeySpec dks = new DESedeKeySpec(keyData); // 获取DESKeySpec
+        SecretKey securekey = keyFactory.generateSecret(dks); // 获取SecretKey
+        // 初始加密操作类
+        Cipher cp = Cipher.getInstance("DESede");
+        cp.init(Cipher.DECRYPT_MODE, securekey);
+        String result = new String(cp.doFinal(ESSGetBase64Decode(paramValue)));
+        return result.split(",")[0];
     }
 }

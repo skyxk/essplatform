@@ -111,6 +111,8 @@
                         <button type="button" class="button bg-main icon-check-square-o"  id="renew"> 续期</button>
                         <button th:if="${seal.is_uk==1}" type="button" class="button bg-main icon-check-square-o"  id="write"> 重写UK</button>
                         <button type="button" class="button bg-main icon-check-square-o"  id="psuse"> 悬挂</button>
+
+
                     </div>
                 </div>
             </form>
@@ -119,6 +121,7 @@
 </div>
 </body>
 <script  type="text/javascript" th:inline="javascript">
+
     $("#submit").click(function(){
         $.ajax({
             url: "/essplatform/seal/cancel",

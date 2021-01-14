@@ -9,17 +9,21 @@ mybatis:
   type-aliases-package: com.chen.entity
 spring:
   #mysql数据源配置 119.45.7.196  81.70.43.116
-#  datasource:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://192.168.0.111:3306/essplatform?useSSL=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&amp
+    driver-class-name: com.mysql.cj.jdbc.Driver
 #    username: root
-#    password: n5*zsqENI&
-#    url: jdbc:mysql://119.45.7.196:3306/essplatform?useSSL=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&amp
+#    password: root
+#    url: jdbc:mysql://localhost:3306/essplatform?useSSL=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&amp
 #    driver-class-name: com.mysql.cj.jdbc.Driver
   #达梦数据源配置  192.168.1.105
-  datasource:
-    username: CLT
-    password: qwe123!@#
-    url: jdbc:dm://10.192.81.21:5236/CLTESS
-    driver-class-name: dm.jdbc.driver.DmDriver
+#  datasource:
+#    username: CLT
+#    password: qwe123!@#
+#    url: jdbc:dm://10.192.81.21:5236/CLTESS
+#    driver-class-name: dm.jdbc.driver.DmDriver
   #人大金仓数据源配置
   #  datasource:
   #    username: CLTESS
@@ -89,11 +93,12 @@ logging:
 #      encoding: UTF-8
 #      content-type: text/html
 #      mode: HTML5
+#  152.136.123.210  123.207.220.137
 myConfig:
-  #  tempFilepath: D:\temp\attachment\    152.136.123.210  123.207.220.137
+#  tempFilepath: D:\temp\attachment\
   tempFilepath: /usr/ESSTEMP/attachment/
-  hostURL: http://10.192.81.21:8088
-  socketIP: 10.192.81.21
+  hostURL: http://10.200.150.26:8088
+  socketIP: 10.200.150.26
   fileTypePath: /opt/esstempfile/jurFile.txt
   #使用的加密方式：1加密机，0token
-  securityType: 1
+  securityType: 0

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chen.dao.WaitForSIgnMapper">
+
+    <select id="queryByUkid" resultType="com.chen.entity.pdf.WaitForSign" parameterType="java.lang.String">
+        select * from waitforsign where UKID =#{UKID} and NOWSTATUS =0 limit 1
+    </select>
+
+    <update id="updateSignvalByUUID" parameterType="java.lang.String">
+       update waitforsign set SIGNVAL =#{SIGNVAL} where UUID = #{UUID}
+  </update>
+
+    <delete id="delByUUID" parameterType="java.lang.String">
+        delete from waitforsign where UUID = #{UUID}
+    </delete>
+    
+    <select id="getAllOldTime" parameterType="java.lang.String" resultType="com.chen.entity.pdf.WaitForSign">
+        SELECT * FROM waitforsign WHERE UUID NOT IN ( SELECT UUID from waitforsign where SUBTIME > #{SUBTIME})
+    </select>
+
+    <select id="findWaitForSign" parameterType="java.lang.String" resultType="com.chen.entity.pdf.WaitForSign">
+        SELECT * FROM waitforsign WHERE UUID = #{wid} and NOWSTATUS =2
+    </select>
+
+    <insert id="addWaitForSign"  keyProperty="UUID" parameterType="com.chen.entity.pdf.WaitForSign" >
+        INSERT INTO
+        waitforsign(UUID,UKID,HASH,SIGNVAL,NOWSTATUS,SUBTIME)
+        VALUES
+        (#{UUID},#{UKID},#{HASH},#{SIGNVAL},#{NOWSTATUS},#{SUBTIME})
+    </insert>
+
+    <update id="updateSignvalState" parameterType="java.lang.String">
+       update waitforsign set NOWSTATUS =#{state} where UUID = #{uuid}
+  </update>
+</mapper>

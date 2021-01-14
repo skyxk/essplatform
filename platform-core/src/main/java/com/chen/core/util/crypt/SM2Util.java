@@ -71,7 +71,6 @@ public class SM2Util {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-
         //3.生成密钥对
         AsymmetricCipherKeyPair asymmetricCipherKeyPair = keyPairGenerator.generateKeyPair();
         return asymmetricCipherKeyPair;
@@ -87,7 +86,6 @@ public class SM2Util {
 		b64.decode(sPublicKey, bOutput1);
 		byte[] publicKey = bOutput1.toByteArray();
 		bOutput1.close();
-		
         // 获取一条SM2曲线参数
         X9ECParameters sm2ECParameters = GMNamedCurves.getByName("sm2p256v1");
         // 构造domain参数

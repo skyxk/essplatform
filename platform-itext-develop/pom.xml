@@ -14,7 +14,6 @@
         <artifactId>ess</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-
     <dependencies>
         <dependency>
             <groupId>org.bouncycastle</groupId>
@@ -28,7 +27,6 @@
             <version>1.49</version>
             <optional>true</optional>
         </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -41,12 +39,12 @@
             <version>1.5.1</version>
             <optional>true</optional>
         </dependency>
-
         <dependency>
             <groupId>com.chen</groupId>
             <artifactId>platform-core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
     </dependencies>
 
     <build>

@@ -41,4 +41,14 @@ public interface SealMapper {
     int getSealCountByType(String sealType);
     int getSealCountBySeal();
     int deleteSealById(String sealId);
+
+    Seal finSealByPersonId(String person_id);
+
+    Seal findSealBySealName(String sealName);
+
+    List<Seal> findSealByUidAndBid(@Param("unitId")String unitId,  @Param("depId")String depId);
+
+    List<Seal> getSealByUidAndType(@Param("unitId")String unitId, @Param("sealType")String sealType );
+
+    List<Seal> findSealListByUnitId(String unitId);
 }

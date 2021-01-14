@@ -6,4 +6,5 @@ public interface ISealImgService {
     boolean addSealImg(SealImg sealImg);
     SealImg findSealImgById(String id);
 
+    boolean updateSealImg(SealImg sealImg);
 }

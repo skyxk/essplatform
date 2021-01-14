@@ -39,4 +39,14 @@ public class CertificateServiceImpl implements ICertificateService {
     public List<CertSource> findCertSource() {
         return certificateMapper.findCertSource();
     }
+
+    @Override
+    public int updateCertificate(Certificate certificate) {
+
+        int result = certificateMapper.updateCertificate(certificate);
+        if (result==1){
+            return 0;
+        }
+        return 1;
+    }
 }

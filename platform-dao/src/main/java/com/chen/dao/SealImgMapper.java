@@ -13,4 +13,6 @@ public interface SealImgMapper {
     SealImg findSealImgById(String id);
 
     int addSealImg(SealImg sealImg);
+
+    boolean updateSealImg(SealImg c);
 }

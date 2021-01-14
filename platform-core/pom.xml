@@ -96,10 +96,52 @@
             <artifactId>ISFJ_v2_0_139_16_BAISC_JDK15</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <!--信安世纪重庆项目获取证书，需先导入本地仓库-->
         <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>5.4.0</version>
+            <groupId>com.clt</groupId>
+            <artifactId>infosec_crypto</artifactId>
+            <version>1.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.clt</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.clt</groupId>
+            <artifactId>jna</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.clt</groupId>
+            <artifactId>ServerFrameWork</artifactId>
+            <version>6.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.clt</groupId>
+            <artifactId>ServerFrameWork</artifactId>
+            <version>6.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.clt</groupId>
+            <artifactId>ServerFrameWork_crypto</artifactId>
+            <version>6.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.clt</groupId>
+            <artifactId>ServerFrameWork_hsm_impl</artifactId>
+            <version>6.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.clt</groupId>
+            <artifactId>RADS</artifactId>
+            <version>6.2.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
         </dependency>
     </dependencies>
 

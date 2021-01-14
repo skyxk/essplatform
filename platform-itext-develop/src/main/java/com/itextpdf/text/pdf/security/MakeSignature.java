@@ -44,7 +44,6 @@
 package com.itextpdf.text.pdf.security;
 
 import com.chen.core.util.NetSignAgentUtils;
-import com.chen.core.util.crypt.SM2Crypto;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.io.RASInputStream;
 import com.itextpdf.text.io.RandomAccessSource;
@@ -65,6 +64,7 @@ import com.itextpdf.text.pdf.PdfSignatureAppearance;
 import com.itextpdf.text.pdf.PdfString;
 import org.bouncycastle.asn1.esf.SignaturePolicyIdentifier;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -73,6 +73,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.*;
+
+import static com.chen.core.util.Base64Utils.byteToFile;
+import static com.chen.core.util.FileUtils.inputStream2File;
 
 /**
  * Class that signs your PDF.
@@ -193,11 +196,11 @@ public class MakeSignature {
         dic.setContact(sap.getContact());
         dic.setDate(new PdfDate(sap.getSignDate())); // time-stamp will over-rule this
         sap.setCryptoDictionary(dic);
-
         HashMap<PdfName, Integer> exc = new HashMap<PdfName, Integer>();
         exc.put(PdfName.CONTENTS, new Integer(estimatedSize * 2 + 2));
         sap.preClose(exc);
         String hashAlgorithm = externalSignature.getHashAlgorithm();
+        System.out.println(hashAlgorithm);
         PdfPKCS7 sgn = new PdfPKCS7(null, chain, hashAlgorithm, null, externalDigest, false);
         if (signaturePolicy != null) {
             sgn.setSignaturePolicy(signaturePolicy);
@@ -212,7 +215,7 @@ public class MakeSignature {
         //在这里替换ESS签名服务获取签名值（参数hash,印章信息，）
         byte[] extSignature = externalSignature.sign(sh);
         sgn.setExternalDigest(extSignature, null, externalSignature.getEncryptionAlgorithm());
-//        sgn.setExternalDigest(extSignature, null, EncryptionAlgorithm);
+        System.out.println( externalSignature.getEncryptionAlgorithm());
         byte[] encodedSig = sgn.getEncodedPKCS7(hash, tsaClient, ocsp, crlBytes, sigtype);
         if (estimatedSize < encodedSig.length)
             throw new IOException("Not enough space");
@@ -257,46 +260,42 @@ public class MakeSignature {
         HashMap<PdfName, Integer> exc = new HashMap<PdfName, Integer>();
         exc.put(PdfName.CONTENTS, new Integer(estimatedSize * 2 + 2));
         sap.preClose(exc);
-        String hashAlgorithm = externalSignature.getHashAlgorithm();
-        //TODO
-//        String hashAlgorithm = "SHA256";
+//        String hashAlgorithm = externalSignature.getHashAlgorithm();
+        String hashAlgorithm = "SHA256";
         PdfPKCS7 sgn = new PdfPKCS7(null, chain, hashAlgorithm, null, externalDigest, false);
         if (signaturePolicy != null) {
             sgn.setSignaturePolicy(signaturePolicy);
         }
-
         InputStream data = sap.getRangeStream();
+
+        inputStream2File(data,new File("D:\\demo.data"));
         byte hash[] = DigestAlgorithms.digest(data, externalDigest.getMessageDigest(hashAlgorithm));
+
+        byteToFile(hash, new File("D:\\demo.hash"));
+
         byte[] ocsp = null;
         if (chain.length >= 2 && ocspClient != null) {
             ocsp = ocspClient.getEncoded((X509Certificate) chain[0], (X509Certificate) chain[1], null);
         }
         byte[] sh = sgn.getAuthenticatedAttributeBytes(hash, ocsp, crlBytes, sigtype);
+        byteToFile(sh, new File("D:\\demo.sh"));
         //TODO
-        byte[] extSignature = NetSignAgentUtils.SocketSign(sh,UKID);
-        System.out.println(extSignature.length);
-
-        System.out.println("***************3");
-        if (extSignature==null){
-            throw new Exception("获取签名值为空");
+        byte[] extSignature = NetSignAgentUtils.getSign(UKID,sh);
+        if (extSignature ==null){
+            throw new NullPointerException("签名值为空");
         }
         String EncryptionAlgorithm = "RSA";
-        sgn.setExternalDigest(extSignature, null, externalSignature.getEncryptionAlgorithm());
-//        sgn.setExternalDigest(extSignature, null, EncryptionAlgorithm);
-
+        sgn.setExternalDigest(extSignature, null, EncryptionAlgorithm);
+//        sgn.setExternalDigest(extSignature, null, externalSignature.getEncryptionAlgorithm());
         byte[] encodedSig = sgn.getEncodedPKCS7(hash, tsaClient, ocsp, crlBytes, sigtype);
-
         if (estimatedSize < encodedSig.length)
             throw new IOException("Not enough space");
         byte[] paddedSig = new byte[estimatedSize];
         System.arraycopy(encodedSig, 0, paddedSig, 0, encodedSig.length);
-
         PdfDictionary dic2 = new PdfDictionary();
         dic2.put(PdfName.CONTENTS, new PdfString(paddedSig).setHexWriting(true));
         sap.close(dic2);
     }
-
-
     /**
      * Processes a CRL list.
      * @param cert	a Certificate if one of the CrlList implementations needs to retrieve the CRL URL from it.
@@ -321,7 +320,6 @@ public class MakeSignature {
         else
             return crlBytes;
     }
-    
     /**
      * Sign the document using an external container, usually a PKCS7. The signature is fully composed
      * externally, iText will just put the container inside the document.

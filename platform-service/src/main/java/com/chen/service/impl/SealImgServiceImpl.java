@@ -29,6 +29,11 @@ public class SealImgServiceImpl implements ISealImgService {
         return decryptSealImg(sealImgMapper.findSealImgById(id));
     }
 
+    @Override
+    public boolean updateSealImg(SealImg sealImg) {
+        return sealImgMapper.updateSealImg(encryptSealImg(sealImg));
+    }
+
     public SealImg encryptSealImg(SealImg sealImg){
         if (sealImg==null){
             return null;

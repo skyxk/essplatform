@@ -152,16 +152,13 @@ public class SM4Util {
 //        String plain = decryptByEcb(in, keyBytes);
 //        return plain;
 //    }
-
-    
     public static void main(String[] args) throws IOException{
-    	String sPlain = "江西烟草测试章";
-    	String sPwd = "514e48f534aab801";
+    	String sPlain = "25c473f4";
+    	String sPwd = "c76e7d1a34017b00";
     	byte[] bEnc2 = SM4Util.encryptByEcb0(sPlain.getBytes(), sPwd.getBytes());
     	System.out.println(Base64Utils.ESSGetBase64Encode(bEnc2));
-        bEnc2 = Base64Utils.ESSGetBase64Decode("SDfQ+mEAj+LD6EO8RSniaTYAAAAAAAAAAAAAAAAAAAA=");
+        bEnc2 = Base64Utils.ESSGetBase64Decode("VIkZljoecdTl2FqM6olc/jgAAAAAAAAAAAAAAAAAAAA=");
         byte[] bEnc = SM4Util.decryptByEcb0(bEnc2, sPwd.getBytes());
         System.out.println(new String(bEnc,"utf-8"));
-        System.out.println(new String(bEnc,"GBK"));
     }
 }

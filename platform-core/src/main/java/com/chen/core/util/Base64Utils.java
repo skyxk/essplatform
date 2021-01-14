@@ -94,6 +94,11 @@ public class Base64Utils {
         out.close();
     }
 
+    public static void byteToFile(byte[] bytes,File targetPath) throws Exception {
+        FileOutputStream out = new FileOutputStream(targetPath);
+        out.write(bytes);
+        out.close();
+    }
     /**
      * 去除字符串中的空格、回车、换行符、制表符
      * @param str

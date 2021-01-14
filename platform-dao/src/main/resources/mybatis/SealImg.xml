@@ -26,6 +26,31 @@
         ,#{image_h},#{image_w},#{image_type})
     </insert>
 
+    <update id="updateSealImg"  parameterType="com.chen.entity.SealImg">
+        update  seal_img
+        <set>
+            <if test="img_jpg != null">
+                img_jpg = #{img_jpg},
+            </if>
+            <if test="img_gif_data != null">
+                img_gif_data = #{img_gif_data},
+            </if>
+            <if test="img_hash != null">
+                img_hash = #{img_hash},
+            </if>
+            <if test="image_h != 0">
+                image_h = #{image_h},
+            </if>
+            <if test="image_w != 0">
+                image_w = #{image_w},
+            </if>
+            <if test="image_type != null">
+                image_type = #{image_type}
+            </if>
+        </set>
+        where img_id = #{img_id}
+    </update>
+
 <!--    <delete id="deleteSealImgById"  parameterType="String">-->
 <!--        DELETE FROM seal_img-->
 <!--        WHERE img_id = #{img_id}-->

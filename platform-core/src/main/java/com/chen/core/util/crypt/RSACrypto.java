@@ -408,12 +408,10 @@ public class RSACrypto {
 		 x509Certificate = (X509Certificate) certificateFactory.generateCertificate(bInput);
 		 String sRootIssuer = x509Certificate.getIssuerDN().getName();
 		 PublicKey issuerPublicKey = x509Certificate.getPublicKey();
-        
-        
 		 String sPsw = UUID.randomUUID().toString().replaceAll("-","");
 		 sPsw = sPsw.substring(0, 8);
 		 CertStruct certStru = new CertStruct();
-			
+
 		 //生成密钥对
 		 KeyPair keyPair = GenKeyPair();
 		if(keyPair == null)
@@ -428,15 +426,12 @@ public class RSACrypto {
 		BcX509ExtensionUtils extUtils = new BcX509ExtensionUtils();
 		ExtensionsGenerator extensionsGenerator = new ExtensionsGenerator();
 		try {
-			
 			//颁发者密钥标识
 //			DigestCalculator calculator = new BcDigestCalculatorProvider().get(new AlgorithmIdentifier(OIWObjectIdentifiers.idSHA1));
 //			X509ExtensionUtils extensionUtils = new X509ExtensionUtils(calculator);
 //			builder.addExtension(Extension.authorityKeyIdentifier, false, extensionUtils.createAuthorityKeyIdentifier(publicKeyInfo));
 //			//使用者密钥标识 
 //			builder.addExtension(Extension.subjectKeyIdentifier, false,extensionUtils.createSubjectKeyIdentifier(publicKeyInfo));
-			
-			
 			extensionsGenerator.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
 			extensionsGenerator.addExtension(Extension.keyUsage, true, new KeyUsage(KeyUsage.digitalSignature | KeyUsage.keyCertSign | KeyUsage.cRLSign));
 			extensionsGenerator.addExtension(Extension.subjectKeyIdentifier,false,extUtils.createSubjectKeyIdentifier(subjectPublicKeyInfo));
